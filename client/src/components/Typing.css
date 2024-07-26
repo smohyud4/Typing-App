@@ -1,0 +1,54 @@
+.container-typing {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 50vh;
+    max-height: 75vh;
+    margin: 0;
+}
+
+.wrapper-typing {
+    background-color: #f7f7f7;
+    padding: 1rem;
+    border-radius: .5rem;
+    width: 700px;
+    max-width: 90%;
+}
+
+.wrapper-typing span {
+    font-size: 28px;
+}
+
+.correct {
+  background-color: lime;
+}
+
+.incorrect {
+  background-color: rgba(234, 24, 24, 0.401);
+}
+
+.current {
+  background-color: rgba(90, 93, 93, 0.199);
+}
+
+.wrapper-typing p {
+    display: inline;
+    font-size: 20px;
+    margin-right: 10px;
+}
+
+#start-button {
+    scale: 2;
+    display: block;
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    border: none;
+    outline: none;
+    background: rgb(97, 97, 196);
+    color: rgb(250, 249, 249);
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 20px;
+    margin-bottom: 5px;
+}
