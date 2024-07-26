@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useCallback, useRef} from 'react';
 import './Typing.css';
 
 const TEXTS = [
@@ -14,10 +14,17 @@ const TEXTS = [
     "I like trweash",
     "What is the difference between right and wrong? Good and evil? Do these concepts exist on a spectrum? A powerful tool that can help guide these questions is ethics. At its core, ethics encompasses all facets of society, dictating what humans ought to do. For example, ethics provide the standards that impose reasonable obligations from common vices such as rape, stealing, murder, assault, slander, and fraud. These standards also include those that enjoin common virtues such as honesty, compassion, and loyalty",
     "While ethics has countless philosophical systems and implications that affect everyday life, its practical influence within the professional field cannot be understated.",
-    "CAPS 097DFHILSD.SDFU 89UWKJ D,MF 09U3IHF.  KDJFL",
+    "What sha'll we do with the drunken sailor?",
     "You can suggest a new statistic by reaching out to the WCA Software Team. If it's widely interesting and feasible to implement, we might add it!"   
 ];
 
+function calculateWPM(start, end, text) {
+  const elapsedTimeInMinutes = (end - start) / 1000 / 60; // Convert milliseconds to minutes
+  const totalCharacters = text.length;
+  const totalWords = totalCharacters / 5; // Approximate words by dividing total characters by 5
+  const wpm = totalWords / elapsedTimeInMinutes;
+  return wpm; // Round to the nearest integer
+}
 
 export default function Typing() {
 
@@ -29,19 +36,23 @@ export default function Typing() {
   const [pointer, setPointer] = useState(0);
   const [correct, setCorrect] = useState(false);
   const [startTime, setStartTime] = useState(null);
-  const [endTime, setEndTime] = useState(null);
+
+  const startTimeRef = useRef(null);
 
   useEffect(() => {
     // Choose a random text from TEXTS and set it to state
-    const selectedText = TEXTS[Math.floor(Math.random() * TEXTS.length)];
-    const textArray = Array.from(selectedText);
-    const converted = textArray.map(char => ({ character: char, currState: ''}));
-    setText(converted);
-  }, []);
+    if (!inProgress) {
+      const selectedText = TEXTS[Math.floor(Math.random() * TEXTS.length)];
+      const textArray = Array.from(selectedText);
+      const converted = textArray.map(char => ({ character: char, currState: ''}));
+      setText(converted);
+    }
+
+  }, [inProgress]);
 
   useEffect(() => {
     const handleKeyDownWrapper = (event) => handleKeyDown(event);
-    document.addEventListener('keydown', handleKeyDownWrapper, true);
+    if (inProgress) document.addEventListener('keydown', handleKeyDownWrapper, true);
 
     return () => {
       document.removeEventListener('keydown', handleKeyDownWrapper, true);
@@ -53,8 +64,14 @@ export default function Typing() {
   }
 
   function resetGame() {
-
- 
+    setInProgress(false);
+    startTimeRef.current = null;
+    setStartTime(null);
+    setPointer(0);
+    setWrong(0);
+    setCorrect(false);
+    //setCurrWpm(0);
+    //setCurrAccuracy(0);
   } 
 
   function handleKeyDown(event) {
@@ -62,7 +79,12 @@ export default function Typing() {
     const key = event.key;
     const shiftPressed = event.shiftKey;
 
-    if (!startTime) setStartTime(Date.now());
+    if (!startTimeRef.current) {
+      const now = new Date();
+      console.log(now);
+      startTimeRef.current = now;
+      setStartTime(now);
+    }
 
     let newText = [...text];
     let char = newText[pointer];
@@ -81,6 +103,9 @@ export default function Typing() {
         });
       }
       else {
+        const newEndTime = new Date();
+        const wpm = calculateWPM(startTimeRef.current, newEndTime, text);
+        setCurrWpm(wpm);
         resetGame();
       }
 
