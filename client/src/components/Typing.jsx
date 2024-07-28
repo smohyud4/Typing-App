@@ -3,7 +3,7 @@
 import {useState, useEffect, useCallback, useRef} from 'react';
 import './Typing.css';
 
-/*const TEXTS = [
+const TEXTS = [
     "There once was a man from nantucket.",
     "The quick brown fox jumps over the lazy dog.",
     "This is a test",
@@ -16,15 +16,15 @@ import './Typing.css';
     "While ethics has countless philosophical systems and implications that affect everyday life, its practical influence within the professional field cannot be understated.",
     "What sha'll we do with the drunken sailor?",
     "You can suggest a new statistic by reaching out to the WCA Software Team. If it's widely interesting and feasible to implement, we might add it!"   
-]; */
-
-const TEXTS = [
-  "123456789",
-  "abcdefghijklmnopqrstuvwxyz",
-  "aaaj"
 ]; 
 
-const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()~,.?:;'/ ";
+/*const TEXTS = [
+  "123456789",
+  "abcdefg",
+  "aaaj"
+]; */
+
+const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()~,.?:;'-/ ";
 
 function calculateWPM(start, end, totalChars) {
   const elapsedTimeInMinutes = (end - start) / 1000 / 60; // Convert milliseconds to minutes
@@ -40,15 +40,14 @@ export default function Typing() {
   const [text, setText] = useState([]);
   const [currWpm, setCurrWpm] = useState(0);
   const [currAccuracy, setCurrAccuracy] = useState(0);
-  const [wrong, setWrong] = useState(0);
-  //const wrong = useRef(0);
-  const [pointer, setPointer] = useState(0);
-  const [correct, setCorrect] = useState(false);
+
   const [startTime, setStartTime] = useState(null);
-  const [charAccuracies, setCharAccuracies] = useState(new Map());
+  const [charAccuracies, setCharAccuracies] = useState({});
 
   const startTimeRef = useRef(null);
-  const pointerRef = useRef(pointer);
+  const pointerRef = useRef(0);
+  const correctRef = useRef(false);
+  const wrongRef = useRef(0);
 
   function updateWPM() {
     const currentTime = new Date();
@@ -57,11 +56,26 @@ export default function Typing() {
     setCurrWpm(wpm);
   } 
 
+  function updateCharAccuracies(char, correct) {
+    setCharAccuracies(prev => {
+      const newCharAccuracies = {...prev};
+      let charData = newCharAccuracies[char];
+      if (correct) {
+        charData.correct += 1;
+        charData.total += 1;
+      }
+      else {
+        charData.correct -= 1;
+      }
+      return newCharAccuracies;
+    });
+  }
+
   useEffect(() => {
 
-    let temp = new Map();
+    let temp = {};
     for (const char of characters) {
-      temp.set(char, {correct: 0, total: 0});
+      temp[char] = {correct: 0, total: 0};
     }
     setCharAccuracies(temp);
 
@@ -85,7 +99,7 @@ export default function Typing() {
     return () => {
       document.removeEventListener('keydown', handleKeyDownWrapper, true);
     };
-  }, [pointer, inProgress]);
+  }, [pointerRef, inProgress]);
 
   useEffect(() => {
     if (inProgress) {
@@ -95,22 +109,14 @@ export default function Typing() {
     }
   }, [startTime]);  
 
-  function startGame() {
-    setInProgress(true);
-  }
-
   function resetGame() {
     setInProgress(false);
     startTimeRef.current = null;
     pointerRef.current = 0;
+    correctRef.current = false;
     setStartTime(null);
-    setPointer(0);
-    setWrong(0);
    
-    //wrong.current = 0;
-    setCorrect(false);
-    //setCurrWpm(0);
-    //setCurrAccuracy(0);
+    wrongRef.current = 0;
   } 
 
   function handleKeyDown(event) {
@@ -126,53 +132,35 @@ export default function Typing() {
     }
 
     let newText = [...text];
-    let char = newText[pointer];
+    let char = newText[pointerRef.current];
 
-    if (key === text[pointer].character) {
+    if (key === text[pointerRef.current].character) {
       char.currState = "correct";
      
-      setCharAccuracies(prev => {
-        const newCharAccuracies = new Map(prev);
-      
-        let charData = newCharAccuracies.get(key);
-        charData.total += 1;
-        charData.correct += 1;
-        return newCharAccuracies;
-      });
+      updateCharAccuracies(key, true);
    
-      setCorrect(false);
-      setPointer((prev) => {
-          let newPointer = prev + 1;
-          pointerRef.current = newPointer; // Update the ref value
-          let accuracy = (((newPointer-wrong) / newPointer) * 100);
-          setCurrAccuracy(accuracy);
-          if (newPointer < text.length) newText[newPointer].currState = "current";
-          return newPointer;
-      });
-      
-      if (pointer === text.length - 1) {
+      correctRef.current = false;
+      pointerRef.current += 1;
+      let accuracy = (((pointerRef.current-wrongRef.current) / pointerRef.current) * 100);
+      setCurrAccuracy(accuracy);
+
+      if (pointerRef.current < text.length) {
+        newText[pointerRef.current].currState = "current";
+        setText(newText);
+      }
+      else {
         const newEndTime = new Date();
-        const wpm = calculateWPM(startTimeRef.current, newEndTime, pointer+1);
+        const wpm = calculateWPM(startTimeRef.current, newEndTime, pointerRef.current);
         setCurrWpm(wpm);
         resetGame();
       }
-      else {
-        setText(newText);
-      }
+    
     }
     else if (!shiftPressed) {
-        if (!correct) {
-            console.log("Wrong key pressed: ", key);
-            setWrong(wrong + 1);
-            setCorrect(true);
-
-            /*setCharAccuracies(prev => {
-              const newCharAccuracies = new Map(prev);
-            
-              let charData = newCharAccuracies.get(text[pointer].character);
-              charData.correct -= 1;
-              return newCharAccuracies;
-            });*/
+        if (!correctRef.current) {
+            wrongRef.current += 1;
+            correctRef.current = true;
+            updateCharAccuracies(char.character, false);
         }
 
         char.currState = "incorrect";
@@ -196,13 +184,13 @@ export default function Typing() {
           <p>Accuracy: {currAccuracy.toFixed(2)}%</p>
         </div>
       </div>
-      {!inProgress && <button id='start-button' onClick={startGame}>Start</button>}
-      {Array.from(charAccuracies.entries()).map(([char, data]) => (
+      {!inProgress && <button id='start-button' onClick={() => setInProgress(true)}>Start</button>}
+      {Object.entries(charAccuracies).map(([char, data]) => (
         data.total > 0 &&
         <div className='accuracies' key={char}>
           <p>Character: {char}</p>
-          <p>Total: {data.total}</p>
-          <p>Correct: {data.correct}</p>
+          <p>Total: {data.correct}</p>
+          <p>Correct: {data.total}</p>
         </div>
       ))}
     </>

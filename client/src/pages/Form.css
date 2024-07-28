@@ -28,7 +28,8 @@
 
 .wrapper .input-box {
     position: relative;
-    width: 100%;
+    left: 8%;
+    width: 80%;
     height: 40px;
     margin: 25px 4px;
 }

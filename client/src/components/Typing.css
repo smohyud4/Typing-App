@@ -11,8 +11,8 @@
     background-color: #f7f7f7;
     padding: 1rem;
     border-radius: .5rem;
-    width: 700px;
-    max-width: 90%;
+    width: 50%;
+    margin-bottom: 1rem;
 }
 
 .wrapper-typing span {
@@ -20,11 +20,12 @@
 }
 
 .correct {
-  background-color: lime;
+  
+  color: rgb(97, 97, 196);
 }
 
 .incorrect {
-  background-color: rgba(234, 24, 24, 0.401);
+  color: rgba(234, 24, 24, 0.639);
 }
 
 .current {
@@ -40,7 +41,6 @@
 #start-button {
     scale: 2;
     display: block;
-    margin-top: 20px;
     margin-left: auto;
     margin-right: auto;
     border: none;
