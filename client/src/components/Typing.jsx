@@ -114,9 +114,8 @@ export default function Typing() {
     startTimeRef.current = null;
     pointerRef.current = 0;
     correctRef.current = false;
-    setStartTime(null);
-   
     wrongRef.current = 0;
+    setStartTime(null);
   } 
 
   function handleKeyDown(event) {
@@ -170,7 +169,6 @@ export default function Typing() {
 
   return (
     <>
-      <h1>Typing</h1>
       <div className='container-typing'>
         <div className='wrapper-typing'>
           {text.map((element, index) => (
@@ -189,8 +187,8 @@ export default function Typing() {
         data.total > 0 &&
         <div className='accuracies' key={char}>
           <p>Character: {char}</p>
-          <p>Total: {data.correct}</p>
-          <p>Correct: {data.total}</p>
+          <p>Correct: {data.correct}</p>
+          <p>Total: {data.total}</p>
         </div>
       ))}
     </>
