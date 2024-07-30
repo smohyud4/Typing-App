@@ -41,8 +41,30 @@ function verifyUser(req, res, next) {
 }
 
 
-app.get("/account", verifyUser, (req, res) => {
-    res.json({user: req.user});
+app.get("/account", verifyUser, async (req, res) => {
+
+    const user = req.user;
+
+    try {
+        const result = await db.query("SELECT * FROM users WHERE username = $1", [user]);
+        const data = result.rows[0];
+        console.log(data);
+        
+        const userData = {
+            races: data.total_races,
+            avgWPM: data.average_wpm,
+            bestWPM: data.best_wpm,
+            accuracy: data.average_accuracy,
+            user: user
+        }
+
+        res.json(userData);
+    }
+    catch (err) {
+        console.log(err);
+        res.sendStatus(500).json({error: "Error fetching user data"});
+    }
+    //res.json({user: req.user});
 });
 
 app.get("/logout", (req, res) => {

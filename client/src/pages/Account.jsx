@@ -1,13 +1,20 @@
 /* eslint-disable no-unused-vars */
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
-import { Logout } from './Login';
 import NavBar from '../components/NavBar';
+import './Account.css';
 
 export default function Account() {
   const [auth, setAuth] = useState(false);
   const [error, setError] = useState('');
-  const [user, setUser] = useState('');
+ 
+  const [data, setData] = useState({
+    races: '', 
+    avgWPM: '',
+    bestWPM: '',
+    accuracy: '',
+    user: ''
+  });
 
   useEffect(() => {
     async function checkAuth() {
@@ -20,7 +27,7 @@ export default function Account() {
         }
 
         console.log(response.data);
-        setUser(response.data.user);
+        setData(response.data);
         setAuth(true);
       }
       catch {
@@ -33,12 +40,16 @@ export default function Account() {
 
   return (
     <>
-      <NavBar isUserSignedIn={auth} logOut={Logout}/>
+      <NavBar isUserSignedIn={auth}/>
       {
         auth ?
-        <div>
+        <div className='auth'>
           <h1>Account</h1>
-          <h2>Welcome, {user}</h2>
+          <h2>Welcome, {data.user}</h2>
+          <h3>Races: {data.races} </h3>
+          <h3>Average WPM: {data.avgWPM} </h3>
+          <h3>Best WPM: {data.bestWPM} </h3>
+          <h3>Accuracy: {data.accuracy}</h3>
         </div>
         :
         <div>
