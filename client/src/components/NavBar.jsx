@@ -1,16 +1,18 @@
 /* eslint-disable no-unused-vars */
 import React from 'react'
 import { Link, useNavigate } from 'react-router-dom';
+import { Logout } from '../pages/Login';
 import './NavBar.css';
 
-export default function Navbar() {
-    const isUserSignedIn = !!localStorage.getItem('token');
-    const navigate = useNavigate();
+// eslint-disable-next-line react/prop-types
+export default function Navbar({isUserSignedIn}) {
 
-    function handleSignOut() {
-        localStorage.removeItem('token');
-        navigate('/login');
-    }
+  const navigate = useNavigate();
+
+  function handleSignOut() {
+    Logout();
+    navigate('../login');
+  }
 
   return (
     <nav className="nav">

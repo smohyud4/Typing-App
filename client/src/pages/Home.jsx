@@ -6,9 +6,12 @@ import Typing from '../components/Typing';
 
 export default function Home() {
   return (
-    <div>
-      <h1>Home</h1>
-      <Typing/>
-    </div>
+    <>
+      <NavBar isUserSignedIn={false}/>
+      <div>
+        <h1>Home</h1>
+        <Typing/>
+      </div>
+    </>
   ) 
 }

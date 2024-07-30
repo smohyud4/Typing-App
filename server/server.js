@@ -4,6 +4,7 @@ import pg from "pg";
 import bcrypt from "bcrypt";
 import jwt from 'jsonwebtoken';
 import cors from 'cors';
+import cookieParser from "cookie-parser";
 
 const app = express();
 const port = 5000;
@@ -19,14 +20,34 @@ const db = new pg.Client({
 });
 db.connect();
 
-const test = [1, 2, 3, 4];
 
-app.use(cors());
+app.use(cors({
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST"],
+    credentials: true
+}));
 app.use(bodyParser.json());
+app.use(cookieParser());
 
-app.get("/test", (req, res) => {
-    console.log("Request made");
-    res.json(test);
+function verifyUser(req, res, next) {
+    const token = req.cookies.token;
+    if (!token) return res.status(401).json({error: "Unauthorized"});
+
+    jwt.verify(token, SECRET_KEY, (err, decoded) => {
+        if (err) return res.status(401).json({error: "Unauthorized"});
+        req.user = decoded.user;
+        next();
+    });
+}
+
+
+app.get("/account", verifyUser, (req, res) => {
+    res.json({user: req.user});
+});
+
+app.get("/logout", (req, res) => {
+    res.clearCookie('token');
+    res.json({message: "Logged out"});
 });
 
 app.post("/register", async(req, res) => {
@@ -59,14 +80,14 @@ app.post("/register", async(req, res) => {
 app.post("/login", async(req, res) => {
     try {
         const {email, password} = req.body;
-        const user = await db.query("SELECT * FROM users WHERE email = $1", [email]);
+        const data = await db.query("SELECT * FROM users WHERE email = $1", [email]);
 
-        if (user.rowCount == 0) {
+        if (data.rowCount == 0) {
             res.status(201).json({error: "User not found"});
         }
         else {
-          console.log(user.rows);
-          let storedPassword = user.rows[0].password;
+          console.log(data.rows);
+          let storedPassword = data.rows[0].password;
           bcrypt.compare(password, storedPassword, (err, result) => {
             if (err) {
               console.log("Error with hashing password logging in:" + err);
@@ -75,7 +96,9 @@ app.post("/login", async(req, res) => {
             console.log(result);
             if (!result) return res.status(201).json({error: "Incorrect password"});
             
-            const token = jwt.sign({userId: user.rows[0].id}, SECRET_KEY, {expiresIn: '1hr'});
+            const user = data.rows[0].username;
+            const token = jwt.sign({user}, SECRET_KEY, {expiresIn: '1hr'});
+            res.cookie('token', token);
             res.json({message: "Succesfully logged in"});
           });
         }

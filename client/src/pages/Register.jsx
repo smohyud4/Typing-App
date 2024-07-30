@@ -4,6 +4,7 @@ import {useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import axios from 'axios';
 import { FaUser, FaEye } from "react-icons/fa";
+import Navbar from '../components/NavBar';
 import './Form.css';
 
 
@@ -46,22 +47,27 @@ export default function Register() {
   }
 
   return (
-    <div className='container-form'>
-      <div className='wrapper'>
-        <form onSubmit={handleSubmit}>
-          <h1>Register</h1>
-          <div className='input-box'>
-            <input type='email' placeholder='Email' value={email} onChange={(e) => setEmail(e.target.value)} required/>
-            <FaUser className='icon'/>
-          </div>
-          <div className='input-box'>
-            <input type={typeReveal} placeholder='Password' value={password} onChange={(e) => setPassword(e.target.value)} required/>
-            <button onClick={revealPassword} className='icon-button'><FaEye className='icon'/></button>
-          </div>
-          {error && <p>{error}</p>}
-          <button type='submit'>Sign Up</button>
-        </form>
+    <>
+      <Navbar isUserSignedIn={false}/>
+      <div className='container-form'>
+        <div className='wrapper'>
+          <form onSubmit={handleSubmit}>
+            <h1>Register</h1>
+            <div className='input-box'>
+              <input type='email' placeholder='Email' value={email} onChange={(e) => setEmail(e.target.value)} required/>
+              <FaUser className='icon'/>
+            </div>
+            <div className='input-box'>
+              <input type={typeReveal} placeholder='Password' value={password} onChange={(e) => setPassword(e.target.value)} required/>
+              <button onClick={revealPassword} className='icon-button'><FaEye className='icon'/></button>
+            </div>
+            {error && <p>{error}</p>}
+            <div className='input-box'>
+              <button className='submit-button' type='submit'>Sign Up</button>
+            </div>
+          </form>
+        </div>
       </div>
-    </div>
+    </>
   )
 }

@@ -8,16 +8,14 @@ import Account from './pages/Account';
 import './App.css';
 
 function App() {
-  const isUserSignedIn = !!localStorage.getItem('token');
   
   return (
     <>
-      <NavBar/>
       <Routes>
         <Route path='/' element={<Home/>}/>
         <Route path='/register' element={<Register/>}/>
         <Route path='/login' element={<Login/>}/>
-        {isUserSignedIn && <Route path='/account' element={<Account/>}/>}
+        <Route path='/account' element={<Account/>}/>
       </Routes>      
     </>
   )
