@@ -23,7 +23,7 @@ db.connect();
 
 app.use(cors({
     origin: "http://localhost:5173",
-    methods: ["GET", "POST"],
+    methods: ["GET", "POST", "PATCH"],
     credentials: true
 }));
 app.use(bodyParser.json());
@@ -52,9 +52,9 @@ app.get("/account", verifyUser, async (req, res) => {
         
         const userData = {
             races: data.total_races,
-            avgWPM: data.average_wpm,
+            WPM: data.total_wpm,
             bestWPM: data.best_wpm,
-            accuracy: data.average_accuracy,
+            accuracy: data.total_accuracy,
             user: user
         }
 
@@ -72,7 +72,8 @@ app.get("/logout", (req, res) => {
     res.json({message: "Logged out"});
 });
 
-app.post("/register", async(req, res) => {
+
+app.post("/register", async (req, res) => {
     try {
         const {email, password} = req.body;
         const checkResult = await db.query("SELECT * FROM users WHERE email = $1", [email]);
@@ -99,7 +100,7 @@ app.post("/register", async(req, res) => {
     }
 });
 
-app.post("/login", async(req, res) => {
+app.post("/login", async (req, res) => {
     try {
         const {email, password} = req.body;
         const data = await db.query("SELECT * FROM users WHERE email = $1", [email]);
@@ -129,6 +130,37 @@ app.post("/login", async(req, res) => {
         console.log(err);
         res.sendStatus(500).json({error: "Error signing in"});
     }
+});
+
+app.patch("/race", verifyUser, async (req, res) => {
+    const user = req.user;
+    console.log(req.body);
+    const {currWpm, currAccuracy} = req.body;
+
+    const queries = [
+
+        `UPDATE users 
+         SET 
+          total_races = total_races + 1
+          best_wpm = GREATEST(best_wpm, $2), 
+          total_wpm = total_wpm + $2, 
+          total_accuracy = total_accuracy + $3, 
+        WHERE 
+          username = $1
+       `,
+
+       `CHAR_ACCURACIES`,
+    ];
+
+    try {
+        await db.query(queries[0], [user, currWpm, currAccuracy]);
+        res.json({message: "Successfully updated"});
+    }
+    catch (err) {
+        console.log(err);
+        res.sendStatus(500).json({error: "Error updating"});
+    } 
+
 });
 
 app.listen(port, () => {
