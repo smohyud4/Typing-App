@@ -40,22 +40,64 @@ function verifyUser(req, res, next) {
     });
 }
 
+function initializeCharQuery(user) {
+    
+    const characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()_+-;:,.<>/? ";
+    const values = characters.split("").map(char => {
+        // Escape single quotes
+        if (char === "'") {
+          char = "''";
+        }
+        return `('${user}', '${char}', 0, 0)`;
+      });
+
+    return `INSERT INTO character_stats (user_name, character, total_typed, total_correct) VALUES ${values.join(", ")}`;
+}
+
+function updateCharQueries(user, characters) {
+    const queries = characters.map(([char, data]) => {
+        if (char === "'") {
+            char = "''";
+        }
+        return `UPDATE character_stats SET total_typed = total_typed + ${data.total}, total_correct = total_correct + ${data.correct} WHERE user_name = '${user}' AND character = '${char}'`;
+    });
+
+    return queries.join("; ");
+}
+
 
 app.get("/account", verifyUser, async (req, res) => {
 
     const user = req.user;
 
+
+    try {
+        const result = await db.query("SELECT * FROM character_stats WHERE user_name = $1", [user]);
+
+        if (result.rowCount == 0) {
+            const query = initializeCharQuery(user);
+            await db.query(query);
+        }
+    }
+    catch (err) {
+        console.log(err);
+        return res.sendStatus(500).json({error: "Error fetching user data"});
+    } 
+
     try {
         const result = await db.query("SELECT * FROM users WHERE username = $1", [user]);
         const data = result.rows[0];
         console.log(data);
+
+        const accuracies = await db.query("SELECT character, total_typed, total_correct FROM character_stats WHERE user_name = $1", [user]);
         
         const userData = {
             races: data.total_races,
             WPM: data.total_wpm,
             bestWPM: data.best_wpm,
             accuracy: data.total_accuracy,
-            user: user
+            user: user,
+            charAccuracies: accuracies.rows
         }
 
         res.json(userData);
@@ -134,26 +176,26 @@ app.post("/login", async (req, res) => {
 
 app.patch("/race", verifyUser, async (req, res) => {
     const user = req.user;
-    console.log(req.body);
-    const {currWpm, currAccuracy} = req.body;
+    console.log(req.body.chars);
+    const {currWpm, currAccuracy, chars} = req.body;
 
-    const queries = [
-
+    const userQuery = 
         `UPDATE users 
          SET 
-          total_races = total_races + 1
+          total_races = total_races + 1,
           best_wpm = GREATEST(best_wpm, $2), 
           total_wpm = total_wpm + $2, 
-          total_accuracy = total_accuracy + $3, 
+          total_accuracy = total_accuracy + $3 
         WHERE 
           username = $1
-       `,
+       `;
 
-       `CHAR_ACCURACIES`,
-    ];
+    const charQuery = updateCharQueries(user, chars);
 
     try {
-        await db.query(queries[0], [user, currWpm, currAccuracy]);
+        await db.query(userQuery, [user, currWpm, currAccuracy]);
+        await db.query(charQuery);
+        
         res.json({message: "Successfully updated"});
     }
     catch (err) {
