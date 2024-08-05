@@ -1,28 +1,10 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
+/* eslint-disable react-hooks/exhaustive-deps */
 import {useState, useEffect, useCallback, useRef} from 'react';
-import axios from 'axios';
 import Stats from './Stats';
+import TypingInput from './TypingInput';
 import './Typing.css';
 
-const TEXTS = [
-    "There once was a man from nantucket.",
-    "The quick brown fox jumps over the lazy dog.",
-    "This is a test",
-    "My sister's cat is very fat",
-    "I hope all is going well. I look forward to improving my writing skills in this class. My writing abilities have certainly grown vastly over the years.",
-    "The AI-powered code completion tool GitHub Copilot generated over 82 billion lines of code within its first year.",
-    "Artificial Intelligence has profoundly influenced our everyday lives, and this influence continues to expand.",
-    "I like trweash",
-    "What is the difference between right and wrong? Good and evil? Do these concepts exist on a spectrum? A powerful tool that can help guide these questions is ethics. At its core, ethics encompasses all facets of society, dictating what humans ought to do. For example, ethics provide the standards that impose reasonable obligations from common vices such as rape, stealing, murder, assault, slander, and fraud. These standards also include those that enjoin common virtues such as honesty, compassion, and loyalty",
-    "While ethics has countless philosophical systems and implications that affect everyday life, its practical influence within the professional field cannot be understated.",
-    "What sha'll we do with the drunken sailor?",
-    "You can suggest a new statistic by reaching out to the WCA Software Team. If it's widely interesting and feasible to implement, we might add it!"   
-]; 
-
-
-
-const characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()_+-;':,.<>/? ";
 
 function calculateWPM(start, end, totalChars) {
   const elapsedTimeInMinutes = (end - start) / 1000 / 60; // Convert milliseconds to minutes
@@ -31,12 +13,47 @@ function calculateWPM(start, end, totalChars) {
   return wpm; // Round to the nearest integer
 }
 
+function validateInput(key1, key2) {
+    
+    const characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()_+-;':,.<>/? ";
+
+    if (key1 == '' || key2 == '') 
+        return "Characters must not be empty";
+
+    if (key1.toLowerCase() === key2.toLowerCase()) 
+        return "Characters must be distinct";
+
+    if (!characters.includes(key1) || !characters.includes(key2)) 
+        return "Characters must be found in " + characters;
+    
+    return "None";
+}
+
+function generateText(key1, key2, capitals) {
+    let str = "";
+    const words = Math.floor(Math.random() * 6) + 15;
+
+    for (let i = 0; i < words; i++) {
+      const length = Math.floor(Math.random() * 4) + 2;
+      
+      for (let j = 0; j < length; j++) {
+        if (Math.random() < 0.5) 
+          j === 0 && capitals ? str += key1.toUpperCase() : str += key1;
+        else 
+          j === 0 && capitals ? str += key2.toUpperCase() : str += key2;
+      }
+
+      str += " ";
+    }
+
+    return str.trim();
+}
 
 // eslint-disable-next-line react/prop-types
-export default function Typing({isUserSignedIn}) {
+export default function PracticeTyping() {
 
+  const [inputData, setInputData] = useState({key1: '', key2: '', error: '', capitals: false}); 
   const [inProgress, setInProgress] = useState(false);
-  const [isLoaded, setIsLoaded] = useState(false);
   const [statShow, setStatShow] = useState(false);
   const [text, setText] = useState([]);
   const [currWpm, setCurrWpm] = useState(0);
@@ -70,42 +87,7 @@ export default function Typing({isUserSignedIn}) {
       }
       return newCharAccuracies;
     });
-  }
-
-  useEffect(() => {
-
-    async function uploadStats() {
-      try {
-        const chars = Object.entries(charAccuracies).filter(([char, data]) => data.total > 0);
-        console.log(chars);
-        const response = await axios.patch('http://localhost:5000/race', {currWpm, currAccuracy, chars}, {withCredentials: true});
-
-        if (response.data.error) {
-          console.log(response.data.error);
-          return;
-        }
-
-        setIsLoaded(true);
-      }
-      catch (error) {
-        console.log(error);
-      }
-    }
-
-    if (statShow && isUserSignedIn) uploadStats();    
-
-  }, [statShow]);
-
-  useEffect(() => {
-    // Choose a random text from TEXTS and set it to state
-    if (!inProgress) {
-      const selectedText = TEXTS[Math.floor(Math.random() * TEXTS.length)];
-      const textArray = Array.from(selectedText);
-      const converted = textArray.map(char => ({ character: char, currState: ''}));
-      setText(converted);
-    }
-
-  }, [inProgress]);
+  } 
 
   useEffect(() => {
     const handleKeyDownWrapper = (event) => handleKeyDown(event);
@@ -125,19 +107,34 @@ export default function Typing({isUserSignedIn}) {
   }, [startTime]);  
 
   function startGame() {
-    let temp = {};
-    for (const char of characters) {
-      temp[char] = {correct: 0, total: 0};
+    const error = validateInput(inputData.key1, inputData.key2);
+    if (error == "None") {
+      let temp = {};
+      
+      temp[inputData.key1] = {correct: 0, total: 0};
+      temp[inputData.key2] = {correct: 0, total: 0};
+      temp[' '] = {correct: 0, total: 0};
+
+      if (inputData.capitals) {
+        temp[inputData.key1.toUpperCase()] = {correct: 0, total: 0};
+        temp[inputData.key2.toUpperCase()] = {correct: 0, total: 0};
+      }
+
+      setCharAccuracies(temp); 
+
+      setInProgress(true);
+      setStatShow(false);
+      setInputData({...inputData, error: ''});
+
+      const array = Array.from(generateText(inputData.key1, inputData.key2, inputData.capitals));
+      setText(array.map((char, index) => {
+        if (index == 0) return { character: char, currState: 'current'};
+        return { character: char, currState: ''}
+      }))
     }
-    setCharAccuracies(temp);
-
-    setInProgress(true);
-    setStatShow(false);
-    setIsLoaded(false);
-
-    const newText = [...text];
-    newText[0].currState = "current";
-    setText(newText);
+    else {
+      setInputData({...inputData, error: error});
+    }
   }
 
   function resetGame() {
@@ -171,6 +168,7 @@ export default function Typing({isUserSignedIn}) {
    
       correctRef.current = false;
       pointerRef.current += 1;
+      console.log('pointerRef', pointerRef.current);
       let accuracy = (((pointerRef.current-wrongRef.current) / pointerRef.current) * 100);
       setCurrAccuracy(accuracy);
 
@@ -202,6 +200,7 @@ export default function Typing({isUserSignedIn}) {
 
   return (
     <>
+      <TypingInput data={inputData} setData={setInputData} />
       <main className='container-typing'>
       {!statShow ? (
         <div className='wrapper-typing'>
@@ -216,27 +215,17 @@ export default function Typing({isUserSignedIn}) {
           <p>Accuracy: {currAccuracy.toFixed(2)}%</p>
         </div>
       ) : (
-        isLoaded || !isUserSignedIn ? (
-          <Stats wpm={Math.round(currWpm)} accuracy={currAccuracy.toFixed(2)}/>
-        ) : (
-          <div className="loader"></div>
-        )
+        <Stats wpm={Math.round(currWpm)} accuracy={currAccuracy.toFixed(2)}/>
       )}
       </main>
       {!inProgress && <button id='start-button' onClick={startGame}>Play</button>}
-    </>
-  );
-} 
-
-/*
-
-{Object.entries(charAccuracies).map(([char, data]) => (
-        data.total > 0 &&
+      {Object.entries(charAccuracies).map(([char, data]) => (
         <div className='accuracies' key={char}>
           <p>Character: {char}</p>
           <p>Correct: {data.correct}</p>
           <p>Total: {data.total}</p>
         </div>
       ))}
-
-*/
+    </>
+  );
+} 

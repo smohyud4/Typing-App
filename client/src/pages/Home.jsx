@@ -10,7 +10,7 @@ export default function Home() {
       <NavBar isUserSignedIn={false}/>
       <div>
         <h1>Home</h1>
-        <Typing/>
+        <Typing isUserSignedIn={false}/>
       </div>
     </>
   ) 

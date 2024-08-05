@@ -20,6 +20,8 @@ export default function Navbar({isUserSignedIn}) {
         <ul>
             {isUserSignedIn ? (
                 <>
+                <li><a href='/race'>Type</a></li>
+                <li><a href='/practice'>Practice</a></li>
                 <li><a href='/account'>Account</a></li>
                 <li><button onClick={handleSignOut}>Sign Out</button></li>
                 </>
