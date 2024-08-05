@@ -65,11 +65,13 @@ function updateCharQueries(user, characters) {
     return queries.join("; ");
 }
 
+app.get("/authorize", verifyUser, async (req, res) => {
+    res.json({message: "Authorized"});
+});
 
 app.get("/account", verifyUser, async (req, res) => {
 
     const user = req.user;
-
 
     try {
         const result = await db.query("SELECT * FROM character_stats WHERE user_name = $1", [user]);
@@ -106,7 +108,6 @@ app.get("/account", verifyUser, async (req, res) => {
         console.log(err);
         res.sendStatus(500).json({error: "Error fetching user data"});
     }
-    //res.json({user: req.user});
 });
 
 app.get("/logout", (req, res) => {
@@ -208,3 +209,5 @@ app.patch("/race", verifyUser, async (req, res) => {
 app.listen(port, () => {
     console.log("Server is running on port " + port);
 })
+
+
