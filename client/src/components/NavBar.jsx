@@ -21,12 +21,12 @@ export default function Navbar({isUserSignedIn}) {
             {isUserSignedIn ? (
                 <>
                 <li><a href='/race'>Type</a></li>
-                <li><a href='/practice'>Practice</a></li>
                 <li><a href='/account'>Account</a></li>
                 <li><button onClick={handleSignOut}>Sign Out</button></li>
                 </>
             ) : (
                 <>
+                <li><a href='/practice'>Practice</a></li>
                 <li><a href='/login'>Login</a></li>
                 <li><a href='/register'>Sign up</a></li>
                 </>

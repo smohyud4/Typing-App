@@ -1,53 +1,10 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import {useState, useEffect, useCallback, useRef} from 'react';
+import {calculateWPM, validateInput, generateText} from '../utils/typing';
 import Stats from './Stats';
 import TypingInput from './TypingInput';
 import './Typing.css';
-
-
-function calculateWPM(start, end, totalChars) {
-  const elapsedTimeInMinutes = (end - start) / 1000 / 60; // Convert milliseconds to minutes
-  const totalWords = totalChars / 5; // Approximate words by dividing total characters by 5
-  const wpm = totalWords / elapsedTimeInMinutes;
-  return wpm; // Round to the nearest integer
-}
-
-function validateInput(key1, key2) {
-    
-    const characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()_+-;':,.<>/? ";
-
-    if (key1 == '' || key2 == '') 
-        return "Characters must not be empty";
-
-    if (key1.toLowerCase() === key2.toLowerCase()) 
-        return "Characters must be distinct";
-
-    if (!characters.includes(key1) || !characters.includes(key2)) 
-        return "Characters must be found in " + characters;
-    
-    return "None";
-}
-
-function generateText(key1, key2, capitals) {
-    let str = "";
-    const words = Math.floor(Math.random() * 6) + 15;
-
-    for (let i = 0; i < words; i++) {
-      const length = Math.floor(Math.random() * 4) + 2;
-      
-      for (let j = 0; j < length; j++) {
-        if (Math.random() < 0.5) 
-          j === 0 && capitals ? str += key1.toUpperCase() : str += key1;
-        else 
-          j === 0 && capitals ? str += key2.toUpperCase() : str += key2;
-      }
-
-      str += " ";
-    }
-
-    return str.trim();
-}
 
 // eslint-disable-next-line react/prop-types
 export default function PracticeTyping() {
