@@ -153,8 +153,6 @@ export default function PracticeTyping() {
     }
   }
   
-  
-
   return (
     <>
       <TypingInput data={inputData} setData={setInputData} />
@@ -172,7 +170,7 @@ export default function PracticeTyping() {
           <p>Accuracy: {currAccuracy.toFixed(2)}%</p>
         </div>
       ) : (
-        <Stats wpm={Math.round(currWpm)} accuracy={currAccuracy.toFixed(2)}/>
+        <Stats wpm={currWpm} accuracy={currAccuracy} charsTyped={text.length} mistakes={text.length-text.length*(currAccuracy/100)}/>
       )}
       </main>
       {!inProgress && <button id='start-button' onClick={startGame}>Play</button>}

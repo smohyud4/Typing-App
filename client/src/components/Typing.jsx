@@ -32,6 +32,7 @@ export default function Typing({isUserSignedIn}) {
     const currentTime = new Date();
     const charactersTyped = pointerRef.current; // Use the ref value
     const wpm = calculateWPM(startTimeRef.current, currentTime, charactersTyped);
+    console.log("Interval");
     setCurrWpm(wpm);
   } 
 
@@ -203,6 +204,8 @@ export default function Typing({isUserSignedIn}) {
     }
   }
 
+
+
   return (
     <>
       <main className='container-typing'>
@@ -220,7 +223,7 @@ export default function Typing({isUserSignedIn}) {
         </div>
       ) : (
         statsLoaded || !isUserSignedIn ? (
-          <Stats wpm={Math.round(currWpm)} accuracy={currAccuracy.toFixed(2)}/>
+          <Stats wpm={currWpm} accuracy={currAccuracy} charsTyped={text.length} mistakes={text.length-text.length*(currAccuracy/100)}/>
         ) : (
           <div className="loader"></div>
         )
