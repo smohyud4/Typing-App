@@ -2,10 +2,14 @@ import express from "express";
 import bodyParser from "body-parser";
 import pg from "pg";
 import bcrypt from "bcrypt";
+import axios from "axios";
 import jwt from 'jsonwebtoken';
 import cors from 'cors';
 import cookieParser from "cookie-parser";
+import { generate, count } from "random-words";
+import env from "dotenv";
 
+env.config();
 const app = express();
 const port = 5000;
 const saltRounds = 10;
@@ -110,6 +114,26 @@ app.get("/account", verifyUser, async (req, res) => {
     }
 });
 
+app.get("/random-text", async (req, res) => {
+   
+    const options = {
+        method: 'GET',
+        url: 'https://api.api-ninjas.com/v1/facts',
+        headers: {
+            'X-Api-Key': process.env.API_KEY
+        }
+    };
+
+    try {
+        const response = await axios.request(options);
+        res.json({text: response.data[0].fact});
+    } 
+    catch (error) {
+        console.error(error);
+        res.sendStatus(500).json({error: "Error fetching text"});
+    }
+});
+
 app.get("/logout", (req, res) => {
     res.clearCookie('token');
     res.json({message: "Logged out"});
@@ -177,7 +201,6 @@ app.post("/login", async (req, res) => {
 
 app.patch("/race", verifyUser, async (req, res) => {
     const user = req.user;
-    console.log(req.body.chars);
     const {currWpm, currAccuracy, chars} = req.body;
 
     const userQuery = 
