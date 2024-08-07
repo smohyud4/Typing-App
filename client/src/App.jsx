@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import {Route, Routes} from 'react-router-dom';
-import NavBar from './components/NavBar'
+//import NavBar from './components/NavBar'
 import Home from './pages/Home';
 import Register from './pages/Register';
 import Login from './pages/Login';

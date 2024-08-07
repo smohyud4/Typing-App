@@ -1,9 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 import {useState, useEffect, useCallback, useRef} from 'react';
-import {getGameText, calculateWPM} from '../utils/typing';
+import {getGameText, calculateWPM} from '../../utils/typing'
 import axios from 'axios';
-import Stats from './Stats';
+import Stats from '../Stats/Stats';
 import './Typing.css';
 
 

@@ -5,6 +5,7 @@ import { SlSpeedometer  } from "react-icons/sl";
 import { PiTargetLight } from "react-icons/pi";
 import { RiCharacterRecognitionLine } from "react-icons/ri";
 import { RxCross1 } from "react-icons/rx";
+import LineChartComponent from '../LineChart/LineChartComopnent';
 import './Stats.css';
 
 export default function Stats({ wpm, accuracy, charsTyped, mistakes }) {
@@ -32,6 +33,15 @@ export default function Stats({ wpm, accuracy, charsTyped, mistakes }) {
   return (
     <>
       <article className="card">
+        <LineChartComponent/>
+      </article>
+    </>
+  );
+}
+
+
+/*
+<article className="card">
         <header className="card-header">
          <SlSpeedometer className="stat-icon"/>
          <h2>WPM: {Math.round(displayWpm)}</h2>
@@ -49,15 +59,4 @@ export default function Stats({ wpm, accuracy, charsTyped, mistakes }) {
          <h2>Mistakes: {Math.round(displayMistakes)}</h2>
         </header>
       </article>
-    </>
-  );
-}
-
-
-/*<div className='stats-typing'>
-<p>Stats</p>
-<p>WPM: {Math.round(displayWpm)}</p>
-<p>Accuracy: {displayAccuracy.toFixed(2)}%</p>
-<p>Characters Typed: {Math.round(displayCharsTyped)}</p>
-<p>Mistakes: {Math.round(displayMistakes)}</p>
-</div>*/
+*/

@@ -1,9 +1,9 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import {useState, useEffect, useCallback, useRef} from 'react';
-import {calculateWPM, validateInput, generateText} from '../utils/typing';
-import Stats from './Stats';
-import TypingInput from './TypingInput';
+import {calculateWPM, validateInput, generateText} from '../../utils/typing'
+import Stats from '../Stats/Stats';
+import TypingInput from '../TypingInput/TypingInput';
 import './Typing.css';
 
 // eslint-disable-next-line react/prop-types

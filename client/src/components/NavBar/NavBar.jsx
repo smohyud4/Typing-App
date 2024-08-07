@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React from 'react'
 import { Link, useNavigate } from 'react-router-dom';
-import { Logout } from '../pages/Login';
+import { Logout } from '../../pages/Login';
 import './NavBar.css';
 
 // eslint-disable-next-line react/prop-types
