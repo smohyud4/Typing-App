@@ -3,8 +3,8 @@ import React from 'react';
 import {useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import axios from 'axios';
-import { FaUser, FaEye } from "react-icons/fa";
-import Navbar from '../components/NavBar';
+import { FaUser, FaEye, FaEyeSlash } from "react-icons/fa";
+import Navbar from '../components/NavBar/NavBar';
 import './Form.css';
 
 
@@ -59,7 +59,9 @@ export default function Register() {
             </div>
             <div className='input-box'>
               <input type={typeReveal} placeholder='Password' value={password} onChange={(e) => setPassword(e.target.value)} required/>
-              <button onClick={revealPassword} className='icon-button'><FaEye className='icon'/></button>
+              <button onClick={revealPassword} className='icon-button'>
+                {typeReveal === 'password' ? <FaEyeSlash className='icon'/> : <FaEye className='icon'/>}
+              </button>
             </div>
             {error && <p>{error}</p>}
             <div className='input-box'>

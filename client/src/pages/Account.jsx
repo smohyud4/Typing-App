@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
-import NavBar from '../components/NavBar';
+import NavBar from '../components/NavBar/NavBar';
 import './Account.css';
 
 export default function Account() {

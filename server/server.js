@@ -46,7 +46,7 @@ function verifyUser(req, res, next) {
 
 function initializeCharQuery(user) {
     
-    const characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()_+-;:,.<>/? ";
+    const characters = `abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()_+-;':,.<>/?" `;
     const values = characters.split("").map(char => {
         // Escape single quotes
         if (char === "'") {

@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-vars */
 import React, {useState, useEffect} from 'react';
-import Typing from '../components/Typing';
+import Typing from '../components/Typing/Typing';
 import axios from 'axios';
-import NavBar from '../components/NavBar';
+import NavBar from '../components/NavBar/NavBar';
 
 
 export default function Race() {

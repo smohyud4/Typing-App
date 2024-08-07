@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-vars */
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
-import NavBar from '../components/NavBar';
-import PracticeTyping from '../components/PracticeTyping';
+import NavBar from '../components/NavBar/NavBar';
+import PracticeTyping from '../components/Typing/PracticeTyping';
 
 
 export default function Race() {
@@ -34,7 +34,7 @@ export default function Race() {
     <>
       <NavBar isUserSignedIn={auth}/>
       {
-        auth ?
+        !auth ?
         <div>
           <h1>Practice</h1>
           <PracticeTyping/>
