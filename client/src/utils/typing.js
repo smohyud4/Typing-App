@@ -1,4 +1,4 @@
-/*const TEXTS = [
+const TEXTS = [
     "There once was a man from nantucket.",
     "The quick brown fox jumps over the lazy dog.",
     "Ocean man, take me by the hand, lead me to the land that you understand.",
@@ -10,11 +10,11 @@
     "What is the difference between right and wrong? Good and evil? Do these concepts exist on a spectrum? A powerful tool that can help guide these questions is ethics. At its core, ethics encompasses all facets of society, dictating what humans ought to do. For example, ethics provide the standards that impose reasonable obligations from common vices such as rape, stealing, murder, assault, slander, and fraud. These standards also include those that enjoin common virtues such as honesty, compassion, and loyalty",
     "What sha'll we do with the drunken sailor?",
     "Want to keep track of your progress? Sign in or create an account to save your stats!"
-];*/ 
+]; 
 
-const TEXTS = [
-  "test"
-];
+//const TEXTS = [
+//  "test"
+//];
 
 export function getGameText() {
     const selectedText = TEXTS[Math.floor(Math.random() * TEXTS.length)];

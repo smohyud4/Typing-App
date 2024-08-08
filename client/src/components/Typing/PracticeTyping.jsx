@@ -23,11 +23,13 @@ export default function PracticeTyping() {
   const pointerRef = useRef(0);
   const correctRef = useRef(false);
   const wrongRef = useRef(0);
+  const wpmHistoryRef = useRef([{name: 0, WPM: 0}]);
 
   function updateWPM() {
     const currentTime = new Date();
     const charactersTyped = pointerRef.current; // Use the ref value
     const wpm = calculateWPM(startTimeRef.current, currentTime, charactersTyped);
+    wpmHistoryRef.current.push({name: wpmHistoryRef.current.length, WPM: wpm});
     setCurrWpm(wpm);
   } 
 
@@ -81,6 +83,7 @@ export default function PracticeTyping() {
 
       setInProgress(true);
       setStatShow(false);
+      wpmHistoryRef.current = [{name: 0, WPM: 0}];
       setInputData({...inputData, error: ''});
 
       const array = Array.from(generateText(inputData.key1, inputData.key2, inputData.capitals));
@@ -136,6 +139,7 @@ export default function PracticeTyping() {
       else {
         const newEndTime = new Date();
         const wpm = calculateWPM(startTimeRef.current, newEndTime, pointerRef.current);
+        wpmHistoryRef.current.push({name: wpmHistoryRef.current.length, WPM: wpm});
         setCurrWpm(wpm);
         resetGame();
       }
@@ -170,17 +174,17 @@ export default function PracticeTyping() {
           <p>Accuracy: {currAccuracy.toFixed(2)}%</p>
         </div>
       ) : (
-        <Stats wpm={currWpm} accuracy={currAccuracy} charsTyped={text.length} mistakes={text.length-text.length*(currAccuracy/100)}/>
+        <Stats 
+          wpm={currWpm} 
+          accuracy={currAccuracy} 
+          charsTyped={text.length} 
+          mistakes={text.length-text.length*(currAccuracy/100)}
+          data={wpmHistoryRef.current}
+        >
+        </Stats>
       )}
       </main>
       {!inProgress && <button id='start-button' onClick={startGame}>Play</button>}
-      {Object.entries(charAccuracies).map(([char, data]) => (
-        <div className='accuracies' key={char}>
-          <p>Character: {char}</p>
-          <p>Correct: {data.correct}</p>
-          <p>Total: {data.total}</p>
-        </div>
-      ))}
     </>
   );
 } 

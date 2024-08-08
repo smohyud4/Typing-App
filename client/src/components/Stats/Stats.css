@@ -1,46 +1,46 @@
-.stats-typing {
-    background-color: #f7f7f7;
-    padding: 1rem;
-    border-radius: .5rem;
-    width: 45%;
-    margin-bottom: 2rem;
-}
-
 .card-header {
     display: flex;
     justify-content: flex-start;
     align-items: center;
     margin-top: auto;
     margin-bottom: auto;
-  }
-  
-  .stat-icon {
-    color: #9494a9;
+}
+
+.stat-icon {
+    color: #cecedb;
     font-size: 1.5rem;
     margin-right: 1rem;
     text-decoration: none;
     border: 0;
     display: inline-block;
-  }
-  
-  
-  .card-header h2 {
+}
+
+
+.card-header h2 {
     margin: 0;
     text-decoration: none;
     border: 0;
     display: inline-block;
     cursor: pointer;
-    color: rgb(104, 104, 210);
+    color: rgb(129, 129, 240);
+    transition: color 0.3s ease, transform 0.3s ease, text-shadow 0.3s ease;
+}
+
+.card-header h2:hover {
+    color: rgb(210, 210, 228);
+    text-shadow: 0 0 10px rgba(243, 243, 250, 0.8); /* Glowing effect */
+    transform: scale(1.05); /* Slight zoom effect */
+    border-bottom: 2px solid rgb(243, 243, 250); /* Underline effect */
+    padding-bottom: 4px; /* Adjust padding for better underline appearance */
   }
-  
-  .card {
+
+.card {
     height: 350px;
-    width: 400px;
+    width: 10%;
     min-width: 250px;
     padding: 1.5rem;
     border-radius: 16px;
-    background: #17141d;
-    box-shadow: -1rem 0 3rem #747272;
+    background: transparent;
     display: flex;
     flex-direction: column;
     transition: .2s;
@@ -48,6 +48,16 @@
     scroll-snap-align: start;
     clear: both;
     position: relative;
-    transition: transform 0.3s, color 0.3s;
-  }
+}
+  
+.stats-container {
+ margin-top: 10px;
+  height: 350px;
+  width: 50%;
+  min-width: 250px;
+  padding: 1.5rem;
+  text-align: center;
+  background: #17141d30;
+  border-radius: 16px;
+}
   

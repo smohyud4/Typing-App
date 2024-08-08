@@ -15,9 +15,10 @@ export default function Typing({isUserSignedIn}) {
   const [inProgress, setInProgress] = useState(false);
   const [statsLoaded, setStatsLoaded] = useState(false);
   const [statShow, setStatShow] = useState(false);
-  const [dataFetched, setDataFetched] = useState(false);
   const [text, setText] = useState("Press start to play!".split('').map(char => ({character: char, currState: ''})));
   const [currWpm, setCurrWpm] = useState(0);
+
+  
   const [currAccuracy, setCurrAccuracy] = useState(0);
 
   const [startTime, setStartTime] = useState(null);
@@ -27,12 +28,13 @@ export default function Typing({isUserSignedIn}) {
   const pointerRef = useRef(0);
   const correctRef = useRef(false);
   const wrongRef = useRef(0);
+  const wpmHistoryRef = useRef([{name: 0, WPM: 0}]);
 
   function updateWPM() {
     const currentTime = new Date();
     const charactersTyped = pointerRef.current; // Use the ref value
     const wpm = calculateWPM(startTimeRef.current, currentTime, charactersTyped);
-    console.log("Interval");
+    wpmHistoryRef.current.push({name: wpmHistoryRef.current.length, WPM: wpm});
     setCurrWpm(wpm);
   } 
 
@@ -124,6 +126,7 @@ export default function Typing({isUserSignedIn}) {
     setCharAccuracies(temp);
     setInProgress(true);
     setStatsLoaded(false);
+    wpmHistoryRef.current = [{name: 0, WPM: 0}];
     if (!isUserSignedIn) {
       setStatShow(false);
       const newText = getGameText();
@@ -188,6 +191,7 @@ export default function Typing({isUserSignedIn}) {
         const newEndTime = new Date();
         const wpm = calculateWPM(startTimeRef.current, newEndTime, pointerRef.current);
         setCurrWpm(wpm);
+        wpmHistoryRef.current.push({name: wpmHistoryRef.current.length, WPM: wpm});
         resetGame();
       }
     
@@ -223,7 +227,14 @@ export default function Typing({isUserSignedIn}) {
         </div>
       ) : (
         statsLoaded || !isUserSignedIn ? (
-          <Stats wpm={currWpm} accuracy={currAccuracy} charsTyped={text.length} mistakes={text.length-text.length*(currAccuracy/100)}/>
+          <Stats 
+            wpm={currWpm} 
+            accuracy={currAccuracy} 
+            charsTyped={text.length} 
+            mistakes={text.length-text.length*(currAccuracy/100)}
+            data={wpmHistoryRef.current}
+          >
+          </Stats>
         ) : (
           <div className="loader"></div>
         )

@@ -8,7 +8,7 @@ import { RxCross1 } from "react-icons/rx";
 import LineChartComponent from '../LineChart/LineChartComopnent';
 import './Stats.css';
 
-export default function Stats({ wpm, accuracy, charsTyped, mistakes }) {
+export default function Stats({ wpm, accuracy, charsTyped, mistakes, data }) {
   const [displayWpm, setDisplayWpm] = useState(0);
   const [displayAccuracy, setDisplayAccuracy] = useState(0);
   const [displayCharsTyped, setDisplayCharsTyped] = useState(0);
@@ -33,10 +33,28 @@ export default function Stats({ wpm, accuracy, charsTyped, mistakes }) {
   return (
     <>
       <article className="card">
-        <LineChartComponent/>
+        <header className="card-header">
+         <SlSpeedometer className="stat-icon"/>
+         <h2>WPM: {Math.round(displayWpm)}</h2>
+        </header>
+        <header className="card-header">
+         <PiTargetLight className="stat-icon"/>
+         <h2>Accuracy: {displayAccuracy.toFixed(2)}%</h2>
+        </header>
+        <header className="card-header">
+         <RiCharacterRecognitionLine className="stat-icon"/>
+         <h2>Chars Typed: {Math.round(displayCharsTyped)}</h2>
+        </header>
+        <header className="card-header">
+         <RxCross1 className="stat-icon"/>
+         <h2>Mistakes: {Math.round(displayMistakes)}</h2>
+        </header>
       </article>
+      <div className="stats-container">
+        <LineChartComponent data={data}/>
+      </div>
     </>
-  );
+  )
 }
 
 
