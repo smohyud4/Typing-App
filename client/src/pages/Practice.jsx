@@ -35,7 +35,7 @@ export default function Race() {
     <>
       <NavBar isUserSignedIn={auth}/>
       {
-        !auth ?
+        auth ?
         <main>
           <br/>
           <PracticeTyping/>

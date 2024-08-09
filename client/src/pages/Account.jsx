@@ -86,6 +86,7 @@ export default function Account() {
 
       let rowThreeUpper = charAccuracies.filter((entry) => rowThreeCaps.includes(entry.character));
       rowThreeUpper.sort((a, b) => rowThreeCaps.indexOf(a.character) - rowThreeCaps.indexOf(b.character));
+      console.log(rowThreeUpper);
 
       let rowFourUpper = charAccuracies.filter((entry) => rowFourCaps.includes(entry.character));
       rowFourUpper.sort((a, b) => rowFourCaps.indexOf(a.character) - rowFourCaps.indexOf(b.character));
@@ -107,7 +108,7 @@ export default function Account() {
 
   return (
     <>
-      <NavBar isUserSignedIn={auth} user={data.user}/>
+      <NavBar isUserSignedIn={auth}/>
       {
         auth ?
           <>
@@ -152,23 +153,3 @@ export default function Account() {
     </>
   )
 } 
-
-/*
-<div className='auth'>
-          <h1>Welcome, Noob</h1>
-          <div className="profile-container">
-            <div className="profile-card">
-              <h2>200</h2>
-              <p>WPM</p>
-            </div>
-            <div className="profile-card">
-              <h2>200</h2>
-              <p>Best WPM</p>
-            </div>
-            <div className="profile-card">
-              <h2>90%</h2>
-              <p>Accuracy</p>
-            </div>
-          </div>
-        </div>
-*/
