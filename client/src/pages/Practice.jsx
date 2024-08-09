@@ -2,6 +2,7 @@
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import NavBar from '../components/NavBar/NavBar';
+import Footer from '../components/Footer/Footer';
 import PracticeTyping from '../components/Typing/PracticeTyping';
 
 
@@ -35,10 +36,10 @@ export default function Race() {
       <NavBar isUserSignedIn={auth}/>
       {
         !auth ?
-        <div>
-          <h1>Practice</h1>
+        <main>
+          <br/>
           <PracticeTyping/>
-        </div>
+        </main>
         :
         <div>
           <h1>{error}</h1>

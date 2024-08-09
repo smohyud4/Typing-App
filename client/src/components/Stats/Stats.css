@@ -15,7 +15,6 @@
     display: inline-block;
 }
 
-
 .card-header h2 {
     margin: 0;
     text-decoration: none;
@@ -32,14 +31,13 @@
     transform: scale(1.05); /* Slight zoom effect */
     border-bottom: 2px solid rgb(243, 243, 250); /* Underline effect */
     padding-bottom: 4px; /* Adjust padding for better underline appearance */
-  }
+ }
 
 .card {
     height: 350px;
     width: 10%;
     min-width: 250px;
     padding: 1.5rem;
-    border-radius: 16px;
     background: transparent;
     display: flex;
     flex-direction: column;
@@ -51,10 +49,9 @@
 }
   
 .stats-container {
- margin-top: 10px;
   height: 350px;
   width: 50%;
-  min-width: 250px;
+  min-width: 100px;
   padding: 1.5rem;
   text-align: center;
   background: #17141d30;

@@ -32,7 +32,7 @@ export default function Stats({ wpm, accuracy, charsTyped, mistakes, data }) {
 
   return (
     <>
-      <article className="card">
+      <aside className="card">
         <header className="card-header">
          <SlSpeedometer className="stat-icon"/>
          <h2>WPM: {Math.round(displayWpm)}</h2>
@@ -49,10 +49,10 @@ export default function Stats({ wpm, accuracy, charsTyped, mistakes, data }) {
          <RxCross1 className="stat-icon"/>
          <h2>Mistakes: {Math.round(displayMistakes)}</h2>
         </header>
-      </article>
-      <div className="stats-container">
+      </aside>
+      <article className="stats-container">
         <LineChartComponent data={data}/>
-      </div>
+      </article>
     </>
   )
 }

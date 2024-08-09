@@ -16,6 +16,8 @@ const TEXTS = [
 //  "test"
 //];
 
+
+
 export function getGameText() {
     const selectedText = TEXTS[Math.floor(Math.random() * TEXTS.length)];
     const textArray = Array.from(selectedText);
@@ -36,7 +38,7 @@ export function calculateWPM(start, end, totalChars) {
 
 export function validateInput(key1, key2) {
     
-    const characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()_+-;':,.<>/? ";
+    const characters = `abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()[]{}_+=-;':,.<>/?" `
 
     if (key1 == '' || key2 == '') 
         return "Characters must not be empty";

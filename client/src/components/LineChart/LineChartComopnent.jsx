@@ -13,56 +13,25 @@ import {
 } from 'recharts';
 import './LineChartComponent.css';
 
-const salesData = [
-  {
-    name: 'Jan',
-    profit: 24,
-  },
-  {
-    name: 'Feb',
-    profit: 13,
-  },
-  {
-    name: 'Mar',
-    profit: 20,
-  },
-  {
-    name: 'Apr',
-    profit: 27,
-  },
-  {
-    name: 'May',
-    profit: 18,
-  },
-  {
-    name: 'Jun',
-    profit: 23,
-  },
-  {
-    name: 'Jun',
-    profit: 23,
-  },
-  {
-    name: 'Jun',
-    profit: 23,
-  },
-  {
-    name: 'Jun',
-    profit: 23,
-  },
-  {
-    name: 'Jun',
-    profit: 23,
-  },
-]; 
+function transformData(data) {
+  if (data.length > 60) {
+    return data.filter((_, index) => index % 4 === 0 || index === data.size-1);
+  }
+
+  if (data.length > 30) {
+    return data.filter((_, index) => index % 2 === 0 || index === data.size-1);
+  }
+  
+  return data;
+}
 
 function LineChartComponent({data}) {
   return (
-    <ResponsiveContainer width="100%" height="100%">
+    <ResponsiveContainer width="100%" height="100%" minWidth={100}>
       <LineChart
         width={500}
         height={300}
-        data={data || salesData}
+        data={transformData(data)}
         margin={{
           right: 30,
         }}

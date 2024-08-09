@@ -1,3 +1,65 @@
 .auth {
     color: white;
+    text-align: center;
 }
+
+
+.profile-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.profile-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 150px;
+    height: 150px;
+    padding: 20px;
+    margin: 20px;
+    border-radius: 10px;
+    background: rgb(97, 97, 196);
+    color: #fff;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .profile-card:hover {
+    transform: scale(1.05);
+    box-shadow: 15px 15px 30px #14151a, -15px -15px 30px #2c303a;
+  }
+  
+  .profile-card h2 {
+    font-size: 3rem;
+    font-family: monospace;
+    margin: 0;
+    color: #f3f3fa;
+    transition: color 0.3s ease;
+  }
+  
+  .profile-card p {
+    font-size: 1.2rem;
+    margin: 0;
+    color: #c7c7d6;
+    transition: color 0.3s ease;
+  }
+
+  .key-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+  }
+
+  #stat-break {
+    border: 0;
+    height: 1px;
+    background: #333;
+    background-image: linear-gradient(to right, #ccc, #1c87ae, #ccc);
+    margin-bottom: 1rem;
+  }
+  

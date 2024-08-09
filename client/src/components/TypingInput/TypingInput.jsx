@@ -7,9 +7,7 @@ import './TypingInput.css';
 export default function TypingInput({data, setData}) {
 
   function handleChange(event) {
-
     const { name } = event.target;
-
     if (event.target.type === 'text') {
         setData({...data, [name]: event.target.value});
     }
@@ -20,7 +18,7 @@ export default function TypingInput({data, setData}) {
 
   return (
     <>
-    <p className='error-input'>{data.error}</p>
+      <p className='error-input'>{data.error}</p>
       <section className="typing-input">
         <input
           maxLength={1}
@@ -44,7 +42,6 @@ export default function TypingInput({data, setData}) {
           name="capitals"
           onChange={handleChange}
         />
-        
       </section>
     </>
   );

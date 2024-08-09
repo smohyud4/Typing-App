@@ -5,6 +5,7 @@ import {useNavigate} from 'react-router-dom';
 import axios from 'axios';
 import { FaUser, FaEye, FaEyeSlash } from "react-icons/fa";
 import Navbar from '../components/NavBar/NavBar';
+import Footer from '../components/Footer/Footer';
 import './Form.css';
 
 
@@ -15,8 +16,15 @@ export default function Register() {
   const [typeReveal, setTypeReveal] = useState('password');
   const navigate = useNavigate();
 
+  function validateEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
+
   function validatePassword(password) {
-    return password.length >= 8;
+    const lengthValid = password.length >= 8;
+    const numberValid = /\d/.test(password);
+    return lengthValid && numberValid;
   }
 
   function revealPassword(event) {
@@ -28,7 +36,11 @@ export default function Register() {
     event.preventDefault();
     try {
       if (!validatePassword(password)) {
-        setError('Password must be at least 8 characters long');
+        setError('Password must be at least 8 characters long and contain a number');
+        return;
+      }
+      if (!validateEmail(email)) {
+        setError('Invalid Email');
         return;
       }
       const response = await axios.post('http://localhost:5000/register', {email, password});
@@ -42,6 +54,7 @@ export default function Register() {
       navigate('/login');
     }
     catch (error) {
+      setError('An error occurred');
       console.log(error);
     }
   }

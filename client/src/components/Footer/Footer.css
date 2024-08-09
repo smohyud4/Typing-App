@@ -1,0 +1,8 @@
+footer {
+    background-color: #333;
+    color: rgb(124, 124, 243);
+    padding: 20px 0;
+    text-align: center;
+    width: 100%;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
+}

@@ -7,7 +7,7 @@ import Stats from '../Stats/Stats';
 import './Typing.css';
 
 
-const characters = `abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()_+-;':,.<>/?" `;
+const characters = `abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()[]{}_+=-;':,.<>/?" `;
 
 // eslint-disable-next-line react/prop-types
 export default function Typing({isUserSignedIn}) {
@@ -124,6 +124,8 @@ export default function Typing({isUserSignedIn}) {
       temp[char] = {correct: 0, total: 0};
     }
     setCharAccuracies(temp);
+    setCurrWpm(0);
+    setCurrAccuracy(0);
     setInProgress(true);
     setStatsLoaded(false);
     wpmHistoryRef.current = [{name: 0, WPM: 0}];
@@ -163,7 +165,7 @@ export default function Typing({isUserSignedIn}) {
     event.preventDefault(); // Make sure you don't scroll down with a space
     const key = event.key;
 
-    if (!startTimeRef.current) {
+    if (!startTimeRef.current && key !== "Shift") {
       const now = new Date();
       console.log(now);
       startTimeRef.current = now;
@@ -209,10 +211,9 @@ export default function Typing({isUserSignedIn}) {
   }
 
 
-
   return (
     <>
-      <main className='container-typing'>
+      <div className='container-typing'>
       {!statShow ? (
         <div className='wrapper-typing'>
           {text.map((element, index) => (
@@ -220,8 +221,7 @@ export default function Typing({isUserSignedIn}) {
               {element.character}
             </span>
           ))}
-          <br/>
-          <br/> 
+          <hr/> 
           <p>WPM: {Math.round(currWpm)}</p>
           <p>Accuracy: {currAccuracy.toFixed(2)}%</p>
         </div>
@@ -239,7 +239,7 @@ export default function Typing({isUserSignedIn}) {
           <div className="loader"></div>
         )
       )}
-      </main>
+      </div>
       {!inProgress && <button id='start-button' onClick={startGame}>Play</button>}
     </>
   );

@@ -1,6 +1,6 @@
 .nav {
     background-color: #222629;
-    color: white;
+    color: rgb(124, 124, 243);
     display: flex;
     justify-content: space-between;
     align-items: stretch;
@@ -9,7 +9,7 @@
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-.nav a {
+.nav a, .nav p {
     color: inherit;
     text-decoration: none;
     height: 100%;
@@ -32,7 +32,11 @@
 }
   
 .nav li:hover {
-    color: #777;
+    color: rgb(226, 226, 236);
+    text-shadow: 0 0 10px rgba(243, 243, 250, 0.8); /* Glowing effect */
+    transform: scale(1.05); /* Slight zoom effect */
+    border-bottom: 2px solid rgb(243, 243, 250); /* Underline effect */
+    padding-bottom: 4px; /* Adjust padding for better underline appearance */
 }
 
 .nav button {

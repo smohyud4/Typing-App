@@ -84,6 +84,8 @@ export default function PracticeTyping() {
       setInProgress(true);
       setStatShow(false);
       wpmHistoryRef.current = [{name: 0, WPM: 0}];
+      setCurrWpm(0);
+      setCurrAccuracy(0);
       setInputData({...inputData, error: ''});
 
       const array = Array.from(generateText(inputData.key1, inputData.key2, inputData.capitals));
@@ -111,7 +113,7 @@ export default function PracticeTyping() {
     event.preventDefault(); // Make sure you don't scroll down with a space
     const key = event.key;
 
-    if (!startTimeRef.current) {
+    if (!startTimeRef.current && key !== "Shift") {
       const now = new Date();
       console.log(now);
       startTimeRef.current = now;
@@ -160,7 +162,7 @@ export default function PracticeTyping() {
   return (
     <>
       <TypingInput data={inputData} setData={setInputData} />
-      <main className='container-typing'>
+      <div className='container-typing'>
       {!statShow ? (
         <div className='wrapper-typing'>
           {text.map((element, index) => (
@@ -168,8 +170,7 @@ export default function PracticeTyping() {
               {element.character}
             </span>
           ))}
-          <br/>
-          <br/> 
+          <hr/>
           <p>WPM: {Math.round(currWpm)}</p>
           <p>Accuracy: {currAccuracy.toFixed(2)}%</p>
         </div>
@@ -183,7 +184,7 @@ export default function PracticeTyping() {
         >
         </Stats>
       )}
-      </main>
+      </div>
       {!inProgress && <button id='start-button' onClick={startGame}>Play</button>}
     </>
   );

@@ -5,7 +5,7 @@ import { Logout } from '../../pages/Login';
 import './NavBar.css';
 
 // eslint-disable-next-line react/prop-types
-export default function Navbar({isUserSignedIn}) {
+export default function Navbar({isUserSignedIn, user}) {
 
   const navigate = useNavigate();
 

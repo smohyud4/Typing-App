@@ -5,6 +5,7 @@ import {useNavigate} from 'react-router-dom';
 import axios from 'axios';
 import { FaUser, FaEye, FaEyeSlash } from "react-icons/fa";
 import Navbar from '../components/NavBar/NavBar';
+import Footer from '../components/Footer/Footer';
 import './Form.css';
 
 
