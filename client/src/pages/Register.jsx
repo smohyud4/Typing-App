@@ -1,15 +1,16 @@
 /* eslint-disable no-unused-vars */
-import React from 'react';
 import {useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import axios from 'axios';
 import { FaUser, FaEye, FaEyeSlash } from "react-icons/fa";
+import { MdEmail } from "react-icons/md";
 import Navbar from '../components/NavBar/NavBar';
 import Footer from '../components/Footer/Footer';
 import './Form.css';
 
 
 export default function Register() {
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -32,6 +33,20 @@ export default function Register() {
     setTypeReveal(typeReveal === 'password' ? 'text' : 'password');
   }
 
+  function validateUsername(username) {
+    const forbiddenWords = /(?:faggot|nigga|fuck)/i;
+    return !forbiddenWords.test(username) && username.length > 2;
+  }
+
+  function handleChange(event) {
+    const {name, value} = event.target;
+
+    setError('');
+    if (name === 'username') setUsername(value);
+    else if (name === 'email') setEmail(value);
+    else setPassword(value);
+  }
+
   async function handleSubmit(event) {
     event.preventDefault();
     try {
@@ -39,11 +54,15 @@ export default function Register() {
         setError('Password must be at least 8 characters long and contain a number');
         return;
       }
+      if (!validateUsername(username)) {
+        setError('Invalid Username');
+        return;
+      }
       if (!validateEmail(email)) {
         setError('Invalid Email');
         return;
       }
-      const response = await axios.post('http://localhost:5000/register', {email, password});
+      const response = await axios.post('http://localhost:5000/register', {username, email, password});
       console.log(response.data);
       if (response.data.error) {
         setError(response.data.error);
@@ -67,11 +86,36 @@ export default function Register() {
           <form onSubmit={handleSubmit}>
             <h1>Register</h1>
             <div className='input-box'>
-              <input type='email' placeholder='Email' value={email} onChange={(e) => setEmail(e.target.value)} required/>
+              <input 
+                type='text' 
+                placeholder='Username'
+                name='username' 
+                value={username} 
+                onChange={handleChange} 
+                required
+              />
               <FaUser className='icon'/>
             </div>
             <div className='input-box'>
-              <input type={typeReveal} placeholder='Password' value={password} onChange={(e) => setPassword(e.target.value)} required/>
+              <input 
+                type='email' 
+                placeholder='Email'
+                name='email' 
+                value={email} 
+                onChange={handleChange} 
+                required
+              />
+              <MdEmail className='icon'/>
+            </div>
+            <div className='input-box'>
+              <input 
+                type={typeReveal} 
+                placeholder='Password'
+                name='password' 
+                value={password} 
+                onChange={handleChange} 
+                required
+              />
               <button onClick={revealPassword} className='icon-button'>
                 {typeReveal === 'password' ? <FaEyeSlash className='icon'/> : <FaEye className='icon'/>}
               </button>

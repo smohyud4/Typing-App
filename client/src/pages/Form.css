@@ -10,7 +10,7 @@
 .wrapper {
     width: 420px;
     height: 50%;
-    background-color: rgb(97, 97, 196);
+    background-color: hsl(240, 46%, 57%);
     color: white;
     border-radius: 20px;
     padding: 30px, 40px;

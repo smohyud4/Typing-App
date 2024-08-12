@@ -12,11 +12,6 @@ const TEXTS = [
     "Want to keep track of your progress? Sign in or create an account to save your stats!"
 ]; 
 
-//const TEXTS = [
-//  "test"
-//];
-
-
 
 export function getGameText() {
     const selectedText = TEXTS[Math.floor(Math.random() * TEXTS.length)];

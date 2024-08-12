@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
-import {useState, useEffect, useCallback, useRef} from 'react';
+import {useState, useEffect, useRef} from 'react';
 import {calculateWPM, validateInput, generateText} from '../../utils/typing'
 import Stats from '../Stats/Stats';
 import TypingInput from '../TypingInput/TypingInput';
@@ -23,13 +23,17 @@ export default function PracticeTyping() {
   const pointerRef = useRef(0);
   const correctRef = useRef(false);
   const wrongRef = useRef(0);
-  const wpmHistoryRef = useRef([{name: 0, WPM: 0}]);
+  const wpmHistoryRef = useRef([{name: 0, WPM: 0, "WPM/s": 0 }]);
 
   function updateWPM() {
     const currentTime = new Date();
     const charactersTyped = pointerRef.current; // Use the ref value
     const wpm = calculateWPM(startTimeRef.current, currentTime, charactersTyped);
-    wpmHistoryRef.current.push({name: wpmHistoryRef.current.length, WPM: wpm});
+    wpmHistoryRef.current.push({
+      name: wpmHistoryRef.current.length, 
+      WPM: wpm, 
+      "WPM/s": wpm-wpmHistoryRef.current[wpmHistoryRef.current.length-1].WPM
+    });
     setCurrWpm(wpm);
   } 
 
@@ -83,7 +87,7 @@ export default function PracticeTyping() {
 
       setInProgress(true);
       setStatShow(false);
-      wpmHistoryRef.current = [{name: 0, WPM: 0}];
+      wpmHistoryRef.current = [{name: 0, WPM: 0, "WPM/s": 0}];
       setCurrWpm(0);
       setCurrAccuracy(0);
       setInputData({...inputData, error: ''});
@@ -141,7 +145,7 @@ export default function PracticeTyping() {
       else {
         const newEndTime = new Date();
         const wpm = calculateWPM(startTimeRef.current, newEndTime, pointerRef.current);
-        wpmHistoryRef.current.push({name: wpmHistoryRef.current.length, WPM: wpm});
+        wpmHistoryRef.current.push({name: wpmHistoryRef.current.length, WPM: wpm, "WPM/s": 0});
         setCurrWpm(wpm);
         resetGame();
       }

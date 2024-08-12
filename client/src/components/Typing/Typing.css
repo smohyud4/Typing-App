@@ -45,6 +45,7 @@
 .wrapper-typing p {
     display: inline;
     font-size: 20px;
+    font-weight: 500;
     margin-right: 10px;
 }
 
@@ -60,16 +61,6 @@
     cursor: pointer;
     border-radius: 20px;
     margin-bottom: 5px;
-}
-
-.accuracies {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 10px;
-}
-
-.accuracies p {
-  color: white;
 }
 
 #loading {

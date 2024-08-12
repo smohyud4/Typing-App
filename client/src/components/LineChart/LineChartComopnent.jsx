@@ -14,11 +14,17 @@ import {
 import './LineChartComponent.css';
 
 function transformData(data) {
+  data[0]["WPM/s"] = data[1].WPM;
+
   if (data.length > 60) {
     return data.filter((_, index) => index % 4 === 0 || index === data.size-1);
   }
 
-  if (data.length > 30) {
+  if (data.length > 40) {
+    return data.filter((_, index) => index % 3 === 0 || index === data.size-1);
+  }
+
+  if (data.length > 20) {
     return data.filter((_, index) => index % 2 === 0 || index === data.size-1);
   }
   
@@ -42,6 +48,7 @@ function LineChartComponent({data}) {
         <Tooltip content={<CustomTooltip />} />
         <Legend />
         <Line type="monotone" dataKey="WPM" stroke="#8b5cf6" />
+        <Line type="monotone" dataKey="WPM/s" stroke="#82ca9d" />
       </LineChart>
     </ResponsiveContainer>
   );
@@ -56,7 +63,11 @@ const CustomTooltip = ({ active, payload, label }) => {
         <p>{label} sec</p>
         <p>
           WPM:
-          <span >{Math.round(payload[0].value)}</span>
+          <span>{Math.round(payload[0].value)}</span>
+        </p>
+        <p>
+          WPM/s:
+          <span>{Math.round(payload[1].value)}</span>
         </p>
       </div>
     );

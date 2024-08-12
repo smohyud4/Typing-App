@@ -5,14 +5,12 @@ import KeyRow from "./KeyRow";
 import "./KeyBoard.css";
 
 function getBackgroundColor(correct, total) {
-  if (total === 0) {
-    return 'transparent';
-  }
+  if (total === 0) return 'transparent';
+  if (correct === 0) return 'hsla(0, 100%, 50%, 0.5)';
 
   const accuracy = correct / total;
-  const r = Math.round(200 * (1 - accuracy)); // Red decreases as accuracy increases
-  const g = Math.round(200 * accuracy); // Green increases as accuracy increases
-  return `rgb(${r}, ${g}, 120)`;
+  // Color gradient that goes from dark green to light green
+  return `hsla(120, 100%, ${0.8*((1-accuracy)*100) + 15}%, ${accuracy})`;
 }
 
 export default function KeyBoard({
@@ -77,3 +75,4 @@ export default function KeyBoard({
     </div>
   </>;
 }
+

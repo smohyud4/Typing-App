@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React from 'react'
-import { Link, useNavigate } from 'react-router-dom';
-import { Logout } from '../../pages/Login';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import './NavBar.css';
 
 // eslint-disable-next-line react/prop-types
@@ -9,9 +9,14 @@ export default function Navbar({isUserSignedIn, user}) {
 
   const navigate = useNavigate();
 
-  function handleSignOut() {
-    Logout();
-    navigate('../login');
+  async function handleSignOut() {
+    try {
+      await axios.get('http://localhost:5000/logout', {withCredentials: true});
+      navigate('../login');
+    }
+    catch (error) {
+      console.log(error);
+    }
   }
 
   return (
@@ -20,9 +25,9 @@ export default function Navbar({isUserSignedIn, user}) {
         <ul>
             {isUserSignedIn ? (
                 <>
+                <li><a href='/account'>Welcome, {user}!</a></li>
                 <li><a href='/race'>Type</a></li>
                 <li><a href='/practice'>Practice</a></li>
-                <li><a href='/account'>Stats</a></li>
                 <li><button onClick={handleSignOut}>Sign Out</button></li>
                 </>
             ) : (

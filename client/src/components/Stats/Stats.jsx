@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { SlSpeedometer  } from "react-icons/sl";
 import { PiTargetLight } from "react-icons/pi";
 import { RiCharacterRecognitionLine } from "react-icons/ri";
@@ -32,20 +32,20 @@ export default function Stats({ wpm, accuracy, charsTyped, mistakes, data }) {
 
   return (
     <>
-      <aside className="card">
-        <header className="card-header">
+      <aside className="race-stats">
+        <header className="race-header">
          <SlSpeedometer className="stat-icon"/>
          <h2>WPM: {Math.round(displayWpm)}</h2>
         </header>
-        <header className="card-header">
+        <header className="race-header">
          <PiTargetLight className="stat-icon"/>
          <h2>Accuracy: {displayAccuracy.toFixed(2)}%</h2>
         </header>
-        <header className="card-header">
+        <header className="race-header">
          <RiCharacterRecognitionLine className="stat-icon"/>
          <h2>Chars Typed: {Math.round(displayCharsTyped)}</h2>
         </header>
-        <header className="card-header">
+        <header className="race-header">
          <RxCross1 className="stat-icon"/>
          <h2>Mistakes: {Math.round(displayMistakes)}</h2>
         </header>
@@ -56,25 +56,3 @@ export default function Stats({ wpm, accuracy, charsTyped, mistakes, data }) {
     </>
   )
 }
-
-
-/*
-<article className="card">
-        <header className="card-header">
-         <SlSpeedometer className="stat-icon"/>
-         <h2>WPM: {Math.round(displayWpm)}</h2>
-        </header>
-        <header className="card-header">
-         <PiTargetLight className="stat-icon"/>
-         <h2>Accuracy: {displayAccuracy.toFixed(2)}%</h2>
-        </header>
-        <header className="card-header">
-         <RiCharacterRecognitionLine className="stat-icon"/>
-         <h2>Characters Typed: {Math.round(displayCharsTyped)}</h2>
-        </header>
-        <header className="card-header">
-         <RxCross1 className="stat-icon"/>
-         <h2>Mistakes: {Math.round(displayMistakes)}</h2>
-        </header>
-      </article>
-*/

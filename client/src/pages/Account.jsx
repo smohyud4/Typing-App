@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
-import React, {useState, useEffect} from 'react';
+import {useState, useEffect} from 'react';
+import {useNavigate} from 'react-router-dom';
 import axios from 'axios';
 import NavBar from '../components/NavBar/NavBar';
 import Footer from '../components/Footer/Footer';
@@ -15,10 +16,11 @@ const rowTwoCaps = "QWERTYUIOP{}";
 const rowThreeCaps = `ASDFGHJKL:"`;
 const rowFourCaps = "ZXCVBNM<>?";
 
-
 export default function Account() {
   const [auth, setAuth] = useState(false);
   const [error, setError] = useState('');
+  const [dataProcessed, setDataProcessed] = useState(false);
+  const navigate = useNavigate();
  
   const [data, setData] = useState({
     races: '', 
@@ -48,19 +50,20 @@ export default function Account() {
         if (response.data.error) {
           setAuth(false);
           setError(response.data.error);
+          console.log(response.data.error);
           return;
         }
 
-        console.log(response.data);
         setData(response.data);
         setAuth(true);
       }
       catch {
         setAuth(false);
+        navigate('../login');
       }
     }
     checkAuth();
-  }, []);
+  }, [navigate]);
   
   useEffect(() => {
     if (data.charAccuracies) {
@@ -86,7 +89,6 @@ export default function Account() {
 
       let rowThreeUpper = charAccuracies.filter((entry) => rowThreeCaps.includes(entry.character));
       rowThreeUpper.sort((a, b) => rowThreeCaps.indexOf(a.character) - rowThreeCaps.indexOf(b.character));
-      console.log(rowThreeUpper);
 
       let rowFourUpper = charAccuracies.filter((entry) => rowFourCaps.includes(entry.character));
       rowFourUpper.sort((a, b) => rowFourCaps.indexOf(a.character) - rowFourCaps.indexOf(b.character));
@@ -102,18 +104,20 @@ export default function Account() {
         rowFourUpper: rowFourUpper,
         space: charAccuracies.filter((entry) => entry.character === ' ')
       });
+
+      setDataProcessed(true);
     }
   }, [data]);
 
 
   return (
     <>
-      <NavBar isUserSignedIn={auth}/>
+      <NavBar isUserSignedIn={auth} user={data.user}/>
       {
         auth ?
           <>
             <div className='auth'>
-              <h1>Total Races: {data.races}</h1>
+              <h2>Total Races: {data.races}</h2>
               <div className="profile-container">
                 <div className="profile-card">
                   <h2>{data.races === 0 ? 0 : Math.round(data.WPM / data.races)}</h2>
@@ -130,18 +134,20 @@ export default function Account() {
               </div>
             </div>
             <div className="key-container">
-              <KeyBoard
-                rowOneVals={accuracyData.rowOneLower}
-                rowTwoVals={accuracyData.rowTwoLower}
-                rowThreeVals={accuracyData.rowThreeLower}
-                rowFourVals={accuracyData.rowFourLower}
-                rowOneCaps={accuracyData.rowOneUpper}
-                rowTwoCaps={accuracyData.rowTwoUpper}
-                rowThreeCaps={accuracyData.rowThreeUpper}
-                rowFourCaps={accuracyData.rowFourUpper}
-                space={accuracyData.space}
-              >
-              </KeyBoard>
+              {dataProcessed &&
+                <KeyBoard
+                  rowOneVals={accuracyData.rowOneLower}
+                  rowTwoVals={accuracyData.rowTwoLower}
+                  rowThreeVals={accuracyData.rowThreeLower}
+                  rowFourVals={accuracyData.rowFourLower}
+                  rowOneCaps={accuracyData.rowOneUpper}
+                  rowTwoCaps={accuracyData.rowTwoUpper}
+                  rowThreeCaps={accuracyData.rowThreeUpper}
+                  rowFourCaps={accuracyData.rowFourUpper}
+                  space={accuracyData.space}
+                >
+                </KeyBoard>
+              }
             </div>
           </>
         : 

@@ -1,4 +1,4 @@
-.card-header {
+.race-header {
     display: flex;
     justify-content: flex-start;
     align-items: center;
@@ -7,6 +7,7 @@
 }
 
 .stat-icon {
+    width: 2rem;
     color: #cecedb;
     font-size: 1.5rem;
     margin-right: 1rem;
@@ -15,7 +16,7 @@
     display: inline-block;
 }
 
-.card-header h2 {
+.race-header h2 {
     margin: 0;
     text-decoration: none;
     border: 0;
@@ -25,7 +26,7 @@
     transition: color 0.3s ease, transform 0.3s ease, text-shadow 0.3s ease;
 }
 
-.card-header h2:hover {
+.race-header h2:hover {
     color: rgb(210, 210, 228);
     text-shadow: 0 0 10px rgba(243, 243, 250, 0.8); /* Glowing effect */
     transform: scale(1.05); /* Slight zoom effect */
@@ -33,10 +34,10 @@
     padding-bottom: 4px; /* Adjust padding for better underline appearance */
  }
 
-.card {
+.race-stats {
     height: 350px;
-    width: 10%;
-    min-width: 250px;
+    width: 20%;
+    min-width: 150px;
     padding: 1.5rem;
     background: transparent;
     display: flex;
@@ -49,9 +50,10 @@
 }
   
 .stats-container {
-  height: 350px;
   width: 50%;
-  min-width: 100px;
+  height: 350px; /* Make the width a percentage of the parent element */
+  max-width: 1200px; /* Set a maximum width to prevent it from getting too wide */
+  min-width: 300px;
   padding: 1.5rem;
   text-align: center;
   background: #17141d30;
