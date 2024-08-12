@@ -19,7 +19,7 @@ export default function Register() {
 
   function validateEmail(email) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+    return emailRegex.test(email) && username !== email;
   }
 
   function validatePassword(password) {
@@ -35,7 +35,8 @@ export default function Register() {
 
   function validateUsername(username) {
     const forbiddenWords = /(?:faggot|nigga|fuck)/i;
-    return !forbiddenWords.test(username) && username.length > 2;
+    const characters =  /^[a-zA-Z0-9]+$/;
+    return !forbiddenWords.test(username) && username.length > 2 && characters.test(username) && username !== email;
   }
 
   function handleChange(event) {

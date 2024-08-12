@@ -7,6 +7,7 @@ import jwt from 'jsonwebtoken';
 import cors from 'cors';
 import cookieParser from "cookie-parser";
 import env from "dotenv";
+import { initializeCharQuery, updateQueries } from "./queries.js";
 
 env.config();
 const app = express();
@@ -43,30 +44,6 @@ function verifyUser(req, res, next) {
     });
 }
 
-function initializeCharQuery(user) {
-    
-    const characters = `abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()[]{}_+=-;':,.<>/?" `;
-    const values = characters.split("").map(char => {
-        // Escape single quotes
-        if (char === "'") char = "''";
-        
-        return `('${user}', '${char}', 0, 0)`;
-      });
-
-    return `INSERT INTO character_stats (user_name, character, total_typed, total_correct) VALUES ${values.join(", ")}`;
-}
-
-function updateCharQueries(user, characters) {
-    const queries = characters.map(([char, data]) => {
-        if (char === "'") {
-            char = "''";
-        }
-        return `UPDATE character_stats SET total_typed = total_typed + ${data.total}, total_correct = total_correct + ${data.correct} WHERE user_name = '${user}' AND character = '${char}'`;
-    });
-
-    return queries.join("; ");
-}
-
 app.get("/authorize", verifyUser, async (req, res) => {
     res.json({user: req.user});
 });
@@ -79,13 +56,13 @@ app.get("/account", verifyUser, async (req, res) => {
         const result = await db.query("SELECT * FROM character_stats WHERE user_name = $1", [user]);
 
         if (result.rowCount == 0) {
-            const query = initializeCharQuery(user);
-            await db.query(query);
+            const query = initializeCharQuery();
+            await db.query(query, [user]);
         }
     }
     catch (err) {
         console.log(err);
-        return res.sendStatus(500).json({error: "Error fetching user data"});
+        return res.status(500).json({error: "Error fetching user data"});
     } 
 
     try {
@@ -108,7 +85,7 @@ app.get("/account", verifyUser, async (req, res) => {
     }
     catch (err) {
         console.log(err);
-        res.sendStatus(500).json({error: "Error fetching user data"});
+        res.status(500).json({error: "Error fetching user data"});
     }
 });
 
@@ -128,7 +105,7 @@ app.get("/random-text", async (req, res) => {
     } 
     catch (error) {
         console.error(error);
-        res.sendStatus(500).json({error: "Error fetching text"});
+        res.status(500).json({error: "Error fetching text"});
     }
 });
 
@@ -137,24 +114,21 @@ app.get("/logout", (req, res) => {
     res.json({message: "Logged out"});
 });
 
-
 app.post("/register", async (req, res) => {
     try {
         const {username, email, password} = req.body;
-        const checkEmail = await db.query("SELECT * FROM users WHERE email = $1", [email]);
-        const checkUsername = await db.query("SELECT * FROM users WHERE username = $1", [username]);
-
-        if (checkEmail.rowCount > 0) {
-            res.status(201).json({error: "Email already registered"})
+        const checkUser = await db.query("SELECT * FROM users WHERE email = $1 OR username = $2", [email, username]);
+        if (checkUser.rows.some(row => row.email === email)) {
+            return res.json({ error: "Email already registered" });
         } 
-        else if (checkUsername.rowCount > 0) {
-            res.status(201).json({error: "Username already taken"});
+        else if (checkUser.rows.some(row => row.username === username)) {
+            return res.json({ error: "Username already taken" });
         }
         else {
             bcrypt.hash(password, saltRounds, async(err, hash) => {
                 if (err) {
                     console.log("Error with hashing password registering:" + err);
-                    return;
+                    return res.status(500).json({ error: "Error processing request" });
                 }
                 await db.query("INSERT INTO users (username, email, password) VALUES ($1, $2, $3)", 
                 [username, email, hash]);
@@ -164,7 +138,7 @@ app.post("/register", async (req, res) => {
     }
     catch (err) {
         console.log(err);
-        res.sendStatus(500).json({error: "Error signing up"});
+        res.status(500).json({error: "Error signing up"});
     }
 });
 
@@ -182,9 +156,8 @@ app.post("/login", async (req, res) => {
           bcrypt.compare(password, storedPassword, (err, result) => {
             if (err) {
               console.log("Error with hashing password logging in:" + err);
-              return;
+              return res.status(500).json({ error: "Error processing request" });
             }
-            console.log(result);
             if (!result) return res.status(201).json({error: "Incorrect password"});
             
             const user = data.rows[0].username;
@@ -196,38 +169,24 @@ app.post("/login", async (req, res) => {
     }
     catch (err) {
         console.log(err);
-        res.sendStatus(500).json({error: "Error signing in"});
+        res.status(500).json({error: "Error signing in"});
     }
 });
 
 app.patch("/race", verifyUser, async (req, res) => {
     const user = req.user;
     const {currWpm, currAccuracy, chars} = req.body;
-
-    const userQuery = 
-        `UPDATE users 
-         SET 
-          total_races = total_races + 1,
-          best_wpm = GREATEST(best_wpm, $2), 
-          total_wpm = total_wpm + $2, 
-          total_accuracy = total_accuracy + $3 
-        WHERE 
-          username = $1
-       `;
-
-    const charQuery = updateCharQueries(user, chars);
+    const [userQuery, charQueries] = updateQueries(chars);
 
     try {
         await db.query(userQuery, [user, currWpm, currAccuracy]);
-        await db.query(charQuery);
-        
+        for (const query of charQueries) await db.query(query, [user]); 
         res.json({message: "Successfully updated"});
     }
     catch (err) {
         console.log(err);
-        res.sendStatus(500).json({error: "Error updating"});
+        res.status(500).json({error: "Error updating"});
     } 
-
 });
 
 app.listen(port, () => {
