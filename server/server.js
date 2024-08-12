@@ -6,7 +6,6 @@ import axios from "axios";
 import jwt from 'jsonwebtoken';
 import cors from 'cors';
 import cookieParser from "cookie-parser";
-import { generate, count } from "random-words";
 import env from "dotenv";
 
 env.config();
@@ -69,7 +68,7 @@ function updateCharQueries(user, characters) {
 }
 
 app.get("/authorize", verifyUser, async (req, res) => {
-    res.json({message: "Authorized"});
+    res.json({user: req.user});
 });
 
 app.get("/account", verifyUser, async (req, res) => {
@@ -141,21 +140,24 @@ app.get("/logout", (req, res) => {
 
 app.post("/register", async (req, res) => {
     try {
-        const {email, password} = req.body;
-        const checkResult = await db.query("SELECT * FROM users WHERE email = $1", [email]);
+        const {username, email, password} = req.body;
+        const checkEmail = await db.query("SELECT * FROM users WHERE email = $1", [email]);
+        const checkUsername = await db.query("SELECT * FROM users WHERE username = $1", [username]);
 
-        if (checkResult.rowCount > 0) {
+        if (checkEmail.rowCount > 0) {
             res.status(201).json({error: "Email already registered"})
         } 
+        else if (checkUsername.rowCount > 0) {
+            res.status(201).json({error: "Username already taken"});
+        }
         else {
             bcrypt.hash(password, saltRounds, async(err, hash) => {
                 if (err) {
                     console.log("Error with hashing password registering:" + err);
                     return;
                 }
-                const autoUserName = email + Math.floor(Math.random() * 1000);
                 await db.query("INSERT INTO users (username, email, password) VALUES ($1, $2, $3)", 
-                [autoUserName, email, hash]);
+                [username, email, hash]);
                 res.status(201).json({message: "Successfully registered!"});
             });
         }
@@ -187,7 +189,7 @@ app.post("/login", async (req, res) => {
             
             const user = data.rows[0].username;
             const token = jwt.sign({user}, SECRET_KEY, {expiresIn: '1hr'});
-            res.cookie('token', token);
+            res.cookie('token', token, {httpOnly: true});
             res.json({message: "Succesfully logged in"});
           });
         }
