@@ -84,8 +84,9 @@ export default function Register() {
       <div className='container-form'>
         <div className='wrapper'>
           <form onSubmit={handleSubmit}>
-            <h1>Register</h1>
+            <h1 id='register-heading'>Reigster</h1>
             <div className='input-box'>
+              <label htmlFor='username' hidden>Username</label>
               <input 
                 type='text' 
                 placeholder='Username'
@@ -97,6 +98,7 @@ export default function Register() {
               <FaUser className='icon'/>
             </div>
             <div className='input-box'>
+              <label htmlFor='email' hidden>Email</label>
               <input 
                 type='email' 
                 placeholder='Email'
@@ -108,6 +110,7 @@ export default function Register() {
               <MdEmail className='icon'/>
             </div>
             <div className='input-box'>
+              <label htmlFor='password' hidden>Password</label>
               <input 
                 type={typeReveal} 
                 placeholder='Password'

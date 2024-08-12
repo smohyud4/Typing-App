@@ -115,26 +115,30 @@ export default function Account() {
       <NavBar isUserSignedIn={auth} user={data.user}/>
       {
         auth ?
-          <>
-            <div className='auth'>
-              <h2>Total Races: {data.races}</h2>
-              <div className="profile-container">
-                <div className="profile-card">
-                  <h2>{data.races === 0 ? 0 : Math.round(data.WPM / data.races)}</h2>
+          <main>
+           <section className='auth'>
+              <header>
+                <h2>Total Races: {data.races}</h2>
+              </header>
+              
+              <section className="profile-container">
+                <article className="profile-card">
+                  <h3>{data.races === 0 ? 0 : Math.round(data.WPM / data.races)}</h3>
                   <p>WPM</p>
-                </div>
-                <div className="profile-card">
-                  <h2>{Math.round(data.bestWPM)}</h2>
+                </article>
+                <article className="profile-card">
+                  <h3>{Math.round(data.bestWPM)}</h3>
                   <p>Best WPM</p>
-                </div>
-                <div className="profile-card">
-                  <h2>{data.races === 0 ? 0 : (data.accuracy / data.races).toFixed(2)}%</h2>
+                </article>
+                <article className="profile-card">
+                  <h3>{data.races === 0 ? 0 : (data.accuracy / data.races).toFixed(2)}%</h3>
                   <p>Accuracy</p>
-                </div>
-              </div>
-            </div>
-            <div className="key-container">
-              {dataProcessed &&
+                </article>
+              </section>
+            </section>
+
+            <section className="key-container">
+              {dataProcessed && (
                 <KeyBoard
                   rowOneVals={accuracyData.rowOneLower}
                   rowTwoVals={accuracyData.rowTwoLower}
@@ -145,11 +149,10 @@ export default function Account() {
                   rowThreeCaps={accuracyData.rowThreeUpper}
                   rowFourCaps={accuracyData.rowFourUpper}
                   space={accuracyData.space}
-                >
-                </KeyBoard>
-              }
-            </div>
-          </>
+                />
+              )}
+            </section>
+          </main>
         : 
         <div>
           <h1>{error}</h1>

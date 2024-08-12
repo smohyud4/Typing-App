@@ -16,7 +16,7 @@
     padding: 30px, 40px;
 }
 
-.wrapper h1 {
+.wrapper #login-heading, #register-heading {
     text-align: center;
     font-size: 36px;
 }

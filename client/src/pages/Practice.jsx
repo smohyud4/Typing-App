@@ -10,6 +10,7 @@ import PracticeTyping from '../components/Typing/PracticeTyping';
 export default function Race() {
   const [auth, setAuth] = useState(false);
   const [error, setError] = useState('');
+  const [user, setUser] = useState('');
   const navigate = useNavigate();
  
   useEffect(() => {
@@ -24,6 +25,7 @@ export default function Race() {
 
         console.log("Authorized");
         setAuth(true);
+        setUser(response.data.user);
       }
       catch {
         setAuth(false);
@@ -36,7 +38,7 @@ export default function Race() {
 
   return (
     <>
-      <NavBar isUserSignedIn={auth}/>
+      <NavBar isUserSignedIn={auth} user={user}/>
       {
         auth ?
         <main>

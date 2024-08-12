@@ -10,6 +10,7 @@ import Footer from '../components/Footer/Footer';
 export default function Race() {
   const [auth, setAuth] = useState(false);
   const [error, setError] = useState('');
+  const [user, setUser] = useState('');
   const navigate = useNavigate();
  
   useEffect(() => {
@@ -22,6 +23,7 @@ export default function Race() {
           return;
         }
 
+        setUser(response.data.user);
         setAuth(true);
       }
       catch {
@@ -35,7 +37,7 @@ export default function Race() {
 
   return (
     <>
-      <NavBar isUserSignedIn={auth}/>
+      <NavBar isUserSignedIn={auth} user={user}/>
       {
         auth ?
         <main>

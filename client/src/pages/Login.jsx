@@ -51,19 +51,21 @@ export default function Login() {
       <div className='container-form'>
           <div className='wrapper'>
             <form onSubmit={handleSubmit}>
-              <h1>Login</h1>
+              <h1 id='login-heading'>Login</h1>
               <div className='input-box'>
-              <input 
-                type='email' 
-                placeholder='Email'
-                name='email' 
-                value={email} 
-                onChange={handleChange} 
-                required
-              />
-              <MdEmail className='icon'/>
-            </div>
+                <label htmlFor='email' hidden>Email</label>
+                <input 
+                  type='email' 
+                  placeholder='Email'
+                  name='email' 
+                  value={email} 
+                  onChange={handleChange} 
+                  required
+                />
+                <MdEmail className='icon'/>
+              </div>
             <div className='input-box'>
+              <label htmlFor='password' hidden>Password</label>
               <input 
                 type={typeReveal} 
                 placeholder='Password'
