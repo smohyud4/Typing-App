@@ -62,12 +62,12 @@ const CustomTooltip = ({ active, payload, label }) => {
       <div className='chart-label'>
         <p>{label} sec</p>
         <p>
-          WPM:
-          <span>{Math.round(payload[0].value)}</span>
+          WPM 
+          <span id='wpm'> {Math.round(payload[0].value)}</span>
         </p>
         <p>
-          WPM/s:
-          <span>{Math.round(payload[1].value)}</span>
+          WPM/s 
+          <span id='wpm-s'> {Math.round(payload[1].value)}</span>
         </p>
       </div>
     );

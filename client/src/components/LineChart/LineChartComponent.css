@@ -1,4 +1,23 @@
 .chart-label {
-  font-size: 1rem;
-  color: #fbf6f6;
+  background-color: rgba(0, 0, 0, 0.75); /* Semi-transparent background */
+  color: #fff; /* White text */
+  padding: 10px; /* Padding around the content */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3); /* Subtle shadow for depth */
+  font-size: 1rem; /* Text size */
+  max-width: 200px; /* Limit the width */
+}
+
+.chart-label p {
+  margin: 4px 0;
+  font-weight: 400; /* Space between the paragraphs */
+}
+
+
+#wpm {
+  color: #8b5cf6; /* Highlight the WPM value in gold */
+}
+
+#wpm-s {
+  color: #82ca9d /* Highlight the WPM/s value in gold */
 }

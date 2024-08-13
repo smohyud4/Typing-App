@@ -1,7 +1,0 @@
-STYLE A (Gorgeous Contrast Visme)
-- Font(s): ????
-- Colors: #61892f, #86C232, #222629, #474B4F, #6B6E70
-
-STYLE B (Striking and Simple Visme)
-- Font(s): ????
-- Colors: #0B0C10, #1F2833, #C5C6C7, #66FCF1, #45A29E
