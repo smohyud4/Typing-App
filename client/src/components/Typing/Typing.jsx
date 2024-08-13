@@ -244,7 +244,7 @@ export default function Typing({isUserSignedIn}) {
         )
       )}
       </div>
-      {!inProgress && <button id='start-button' onClick={startGame}>Play</button>}
+      {!inProgress && <button id='start-button' onClick={startGame}>Start</button>}
     </>
   );
 } 

@@ -52,3 +52,10 @@
     cursor: pointer;
     margin-top: 30%;
 }
+
+img {
+    width: 100%;
+    padding: 2px;
+    margin-right: 10px;
+    background-color: rgb(166, 84, 237); /* Spacing */
+}

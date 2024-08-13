@@ -2,6 +2,7 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import keyImage from '../../key-920.png';
 import './NavBar.css';
 
 // eslint-disable-next-line react/prop-types
@@ -21,11 +22,11 @@ export default function Navbar({isUserSignedIn, user}) {
 
   return (
     <nav className="nav">
-        <h1><a href='/'>KeyType</a></h1>
+        <h1><a href={isUserSignedIn ? '/race' : '/'}>KeyType</a></h1>
         <ul>
             {isUserSignedIn ? (
                 <>
-                <li><a href='/account'>Welcome, {user}!</a></li>
+                <li><a href='/account'>Welcome, {user}</a></li>
                 <li><a href='/race'>Race</a></li>
                 <li><a href='/practice'>Practice</a></li>
                 <li><button onClick={handleSignOut}>Sign Out</button></li>
