@@ -189,7 +189,7 @@ export default function PracticeTyping() {
         </Stats>
       )}
       </div>
-      {!inProgress && <button id='start-button' onClick={startGame}>Play</button>}
+      {!inProgress && <button id='start-button' onClick={startGame}>Start</button>}
     </>
   );
 } 

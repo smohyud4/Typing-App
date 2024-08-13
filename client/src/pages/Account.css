@@ -60,4 +60,9 @@
     background-image: linear-gradient(to right, #ccc, #1c87ae, #ccc);
     margin-bottom: 1rem;
   }
+
+  #loader-container {
+    display: grid;
+    place-items: center;
+  }
   

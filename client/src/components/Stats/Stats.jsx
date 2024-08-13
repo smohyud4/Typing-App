@@ -1,6 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-import { useState, useEffect } from 'react';
 import { SlSpeedometer  } from "react-icons/sl";
 import { PiTargetLight } from "react-icons/pi";
 import { RiCharacterRecognitionLine } from "react-icons/ri";
@@ -9,45 +9,25 @@ import LineChartComponent from '../LineChart/LineChartComopnent';
 import './Stats.css';
 
 export default function Stats({ wpm, accuracy, charsTyped, mistakes, data }) {
-  const [displayWpm, setDisplayWpm] = useState(0);
-  const [displayAccuracy, setDisplayAccuracy] = useState(0);
-  const [displayCharsTyped, setDisplayCharsTyped] = useState(0);
-  const [displayMistakes, setDisplayMistakes] = useState(0);
-
-  useEffect(() => {
-    let wpmIncrement = wpm / 50; // Adjust the division to control speed
-    let accuracyIncrement = accuracy / 50;
-    let charsTypedIncrement = charsTyped / 50;
-    let mistakesIncrement = mistakes / 50;
-
-    let interval = setInterval(() => {
-      setDisplayWpm(prev => Math.min(prev + wpmIncrement, wpm));
-      setDisplayAccuracy(prev => Math.min(prev + accuracyIncrement, accuracy));
-      setDisplayCharsTyped(prev => Math.min(prev + charsTypedIncrement, charsTyped));
-      setDisplayMistakes(prev => Math.min(prev + mistakesIncrement, mistakes));
-    }, 20); // Adjust the interval time to control speed
-
-    return () => clearInterval(interval);
-  }, [wpm, accuracy, charsTyped, mistakes]);
 
   return (
     <>
       <aside className="race-stats">
         <header className="race-header">
          <SlSpeedometer className="stat-icon"/>
-         <h2>WPM: {Math.round(displayWpm)}</h2>
+         <h2>WPM: {Math.round(wpm)}</h2>
         </header>
         <header className="race-header">
          <PiTargetLight className="stat-icon"/>
-         <h2>Accuracy: {displayAccuracy.toFixed(2)}%</h2>
+         <h2>Accuracy: {accuracy.toFixed(2)}%</h2>
         </header>
         <header className="race-header">
          <RiCharacterRecognitionLine className="stat-icon"/>
-         <h2>Chars Typed: {Math.round(displayCharsTyped)}</h2>
+         <h2>Chars Typed: {Math.round(charsTyped)}</h2>
         </header>
         <header className="race-header">
          <RxCross1 className="stat-icon"/>
-         <h2>Mistakes: {Math.round(displayMistakes)}</h2>
+         <h2>Mistakes: {Math.round(mistakes)}</h2>
         </header>
       </aside>
       <article className="stats-container">

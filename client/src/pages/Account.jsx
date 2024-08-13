@@ -120,7 +120,7 @@ export default function Account() {
               <header>
                 <h2>Total Races: {data.races}</h2>
               </header>
-              
+      
               <section className="profile-container">
                 <article className="profile-card">
                   <h3>{data.races === 0 ? 0 : Math.round(data.WPM / data.races)}</h3>
@@ -154,10 +154,9 @@ export default function Account() {
             </section>
           </main>
         : 
-        <div>
-          <h1>{error}</h1>
-          <h1>Unauthorized</h1>
-        </div>
+        <main id='loader-container'>
+          <div className="loader"></div>
+        </main>
       }
     </>
   )

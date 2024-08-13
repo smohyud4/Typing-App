@@ -18,7 +18,6 @@ export default function Typing({isUserSignedIn}) {
   const [text, setText] = useState("Press start to play!".split('').map(char => ({character: char, currState: ''})));
   const [currWpm, setCurrWpm] = useState(0);
 
-  
   const [currAccuracy, setCurrAccuracy] = useState(0);
 
   const [startTime, setStartTime] = useState(null);
@@ -107,10 +106,26 @@ export default function Typing({isUserSignedIn}) {
         setText(getGameText());
         return;
       }
-      const text = response.data.text;
-      console.log(text);
+      const facts = response.data.text;
+      let text = "";
+      const punctuation = ['.', '!', '?'];
+
+      for (let i = 0; i < facts.length; i++) {
+        let fact = facts[i].fact;
+        let end = fact[fact.length-1];
+        text += fact;
+
+        if (!punctuation.includes(end) && end !== '"') 
+          text += punctuation[Math.floor(Math.random() * punctuation.length)]; 
+        if (i !== facts.length-1) 
+          text += ' ';
+      }
+      
       const textArray = Array.from(text);
       const converted = textArray.map((char, index) => {
+        if (char === '|' || char === '~' || char === '`' || char === '@' || char === '\\') { 
+          return { character: ' ', currState: ''};
+        }
         if (index === 0) return { character: char, currState: 'current'};
         return { character: char, currState: ''}
       });
@@ -171,7 +186,6 @@ export default function Typing({isUserSignedIn}) {
 
     if (!startTimeRef.current && key !== "Shift") {
       const now = new Date();
-      console.log(now);
       startTimeRef.current = now;
       setStartTime(now);
     }
@@ -219,7 +233,7 @@ export default function Typing({isUserSignedIn}) {
     <>
       <div className='container-typing'>
       {!statShow ? (
-        <div className='wrapper-typing'>
+        <section className='wrapper-typing'>
           {text.map((element, index) => (
             <span key={index} id={index.toString()} className={element.currState}>
               {element.character}
@@ -228,7 +242,7 @@ export default function Typing({isUserSignedIn}) {
           <hr/> 
           <p>WPM: {Math.round(currWpm)}</p>
           <p>Accuracy: {currAccuracy.toFixed(2)}%</p>
-        </div>
+        </section>
       ) : (
         statsLoaded || !isUserSignedIn ? (
           <Stats 
@@ -248,16 +262,3 @@ export default function Typing({isUserSignedIn}) {
     </>
   );
 } 
-
-/*
-
-{Object.entries(charAccuracies).map(([char, data]) => (
-        data.total > 0 &&
-        <div className='accuracies' key={char}>
-          <p>Character: {char}</p>
-          <p>Correct: {data.correct}</p>
-          <p>Total: {data.total}</p>
-        </div>
-      ))}
-
-*/
