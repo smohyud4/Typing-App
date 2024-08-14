@@ -46,7 +46,8 @@ export default function Account() {
   useEffect(() => {
     async function checkAuth() {
       try {
-        const response = await axios.get('http://localhost:5000/account', {withCredentials: true});
+        const apiUrl = import.meta.env.VITE_API_URL;
+        const response = await axios.get(`${apiUrl}/account`, {withCredentials: true});
         if (response.data.error) {
           setAuth(false);
           setError(response.data.error);

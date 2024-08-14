@@ -63,7 +63,8 @@ export default function Register() {
         setError('Invalid Email');
         return;
       }
-      const response = await axios.post('http://localhost:5000/register', {username, email, password});
+      const apiUrl = import.meta.env.VITE_API_URL;
+      const response = await axios.post(`${apiUrl}/register`, {username, email, password});
       console.log(response.data);
       if (response.data.error) {
         setError(response.data.error);

@@ -99,8 +99,8 @@ export default function Typing({isUserSignedIn}) {
   
   async function fetchText() {
     try {
-      
-      const response = await axios.get('http://localhost:5000/random-text');
+      const apiUrl = import.meta.env.VITE_API_URL;
+      const response = await axios.get(`${apiUrl}/random-text`, {withCredentials: true});
       if (response.data.error) {
         console.log(response.data.error);
         setText(getGameText());

@@ -16,7 +16,8 @@ export default function Race() {
   useEffect(() => {
     async function checkAuth() {
       try {
-        const response = await axios.get('http://localhost:5000/authorize', {withCredentials: true});
+        const apiUrl = import.meta.env.VITE_API_URL;
+        const response = await axios.get(`${apiUrl}/authorize`, {withCredentials: true});
         if (response.data.error) {
           setAuth(false);
           setError(response.data.error);

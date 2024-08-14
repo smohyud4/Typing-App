@@ -30,7 +30,8 @@ export default function Login() {
   async function handleSubmit(event) {
     event.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/login', {email, password}, {withCredentials: true});
+      const apiUrl = import.meta.env.VITE_API_URL;
+      const response = await axios.post(`${apiUrl}/login`, {email, password}, {withCredentials: true});
       if (response.data.error) {
         setError(response.data.error);
         return;

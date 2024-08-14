@@ -2,7 +2,6 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import keyImage from '../../key-920.png';
 import './NavBar.css';
 
 // eslint-disable-next-line react/prop-types
@@ -12,7 +11,8 @@ export default function Navbar({isUserSignedIn, user}) {
 
   async function handleSignOut() {
     try {
-      await axios.get('http://localhost:5000/logout', {withCredentials: true});
+      const apiUrl = import.meta.env.VITE_API_URL;
+      await axios.get(`${apiUrl}/logout`, {withCredentials: true});
       navigate('../login');
     }
     catch (error) {
