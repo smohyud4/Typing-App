@@ -27,7 +27,7 @@ const pool = new pg.Pool({
 });
 
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: "https://key-type-delta.vercel.app/",
     methods: ["GET", "POST", "PATCH"],
     credentials: true
 }));
@@ -94,7 +94,7 @@ app.get("/account", verifyUser, async (req, res) => {
     }
 });
 
-app.get("/random-text", async (req, res) => {
+app.get("/random-text", verifyUser, async (req, res) => {
    
     const limit = Math.random() < 0.6 ? 2 : 3;
     const options = {
@@ -173,7 +173,11 @@ app.post("/login", async (req, res) => {
             
             const user = data.rows[0].username;
             const token = jwt.sign({user}, SECRET_KEY, {expiresIn: '1hr'});
-            res.cookie('token', token, {httpOnly: true});
+            res.cookie('token', token, {
+                httpOnly: true,
+                secure: true,
+                sameSite: 'None' 
+            });
             res.json({message: "Succesfully logged in"});
           });
         }
