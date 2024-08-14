@@ -12,18 +12,19 @@ import { initializeCharQuery, updateQueries } from "./queries.js";
 env.config();
 const app = express();
 const port = process.env.PORT || 5000;
-const saltRounds = process.env.SALT_ROUNDS;
 const SECRET_KEY = process.env.SECRET_KEY;
 
-const db = new pg.Client({
-    user: process.env.PG_USER,
-    host:  process.env.PG_HOST,
-    database: process.env.PG_DATABASE,
-    password: process.env.PG_PASSWORD,
-    port: process.env.PG_PORT
-});
-//db.connect();
+const pg_user = process.env.PG_USER;
+const pg_host = process.env.PG_HOST;
+const pg_database = process.env.PG_DATABASE;
+const pg_password = process.env.PG_PASSWORD;
+const pg_port = process.env.PG_PORT;
 
+const connectionString = `postgresql://${pg_user}:${pg_password}@${pg_host}:${pg_port}/${pg_database}`;
+
+const pool = new pg.Pool({
+    connectionString: connectionString 
+});
 
 app.use(cors({
     origin: "http://localhost:5173",
@@ -53,27 +54,25 @@ app.get("/authorize", verifyUser, async (req, res) => {
 });
 
 app.get("/account", verifyUser, async (req, res) => {
-
+    const db = await pool.connect();  
     const user = req.user;
 
     try {
-        const result = await db.query("SELECT * FROM character_stats WHERE user_name = $1", [user]);
-
-        if (result.rowCount == 0) {
+        // Check if character stats exist for the user
+        let result = await db.query("SELECT * FROM character_stats WHERE user_name = $1", [user]);
+        
+        if (result.rowCount === 0) { 
             const query = initializeCharQuery();
             await db.query(query, [user]);
         }
-    }
-    catch (err) {
-        console.log(err);
-        return res.status(500).json({error: "Error fetching user data"});
-    } 
 
-    try {
-        const result = await db.query("SELECT * FROM users WHERE username = $1", [user]);
+        result = await db.query("SELECT * FROM users WHERE username = $1", [user]);
         const data = result.rows[0];
 
-        const accuracies = await db.query("SELECT character, total_typed, total_correct FROM character_stats WHERE user_name = $1", [user]);
+        const accuracies = await db.query(
+            "SELECT character, total_typed, total_correct FROM character_stats WHERE user_name = $1", 
+            [user]
+        );
         
         const userData = {
             races: data.total_races,
@@ -82,13 +81,16 @@ app.get("/account", verifyUser, async (req, res) => {
             accuracy: data.total_accuracy,
             user: user,
             charAccuracies: accuracies.rows
-        }
+        };
 
         res.json(userData);
-    }
+    } 
     catch (err) {
         console.log(err);
         res.status(500).json({error: "Error fetching user data"});
+    } 
+    finally {
+        db.release();  // Always release the client
     }
 });
 
@@ -119,6 +121,7 @@ app.get("/logout", (req, res) => {
 });
 
 app.post("/register", async (req, res) => {
+    const db = await pool.connect();
     try {
         const {username, email, password} = req.body;
         const checkUser = await db.query("SELECT * FROM users WHERE email = $1 OR username = $2", [email, username]);
@@ -129,7 +132,7 @@ app.post("/register", async (req, res) => {
             return res.json({ error: "Username already taken" });
         }
         else {
-            bcrypt.hash(password, saltRounds, async(err, hash) => {
+            bcrypt.hash(password, 10, async(err, hash) => {
                 if (err) {
                     console.log("Error with hashing password registering:" + err);
                     return res.status(500).json({ error: "Error processing request" });
@@ -144,9 +147,13 @@ app.post("/register", async (req, res) => {
         console.log(err);
         res.status(500).json({error: "Error signing up"});
     }
+    finally {
+        db.release();
+    }
 });
 
 app.post("/login", async (req, res) => {
+    const db = await pool.connect();
     try {
         const {email, password} = req.body;
         const data = await db.query("SELECT * FROM users WHERE email = $1", [email]);
@@ -175,9 +182,13 @@ app.post("/login", async (req, res) => {
         console.log(err);
         res.status(500).json({error: "Error signing in"});
     }
+    finally {
+        db.release();
+    }
 });
 
 app.patch("/race", verifyUser, async (req, res) => {
+    const db = await pool.connect();
     const user = req.user;
     const {currWpm, currAccuracy, chars} = req.body;
     const [userQuery, charQueries] = updateQueries(chars);
@@ -191,6 +202,9 @@ app.patch("/race", verifyUser, async (req, res) => {
         console.log(err);
         res.status(500).json({error: "Error updating"});
     } 
+    finally {
+        db.release();
+    }
 });
 
 app.listen(port, () => {
