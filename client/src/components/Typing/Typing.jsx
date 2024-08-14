@@ -62,7 +62,8 @@ export default function Typing({isUserSignedIn}) {
       try {
         const chars = Object.entries(charAccuracies).filter(([_, data]) => data.total > 0);
         console.log(chars);
-        const response = await axios.patch('http://localhost:5000/race', {currWpm, currAccuracy, chars}, {withCredentials: true});
+        const apiUrl = import.meta.env.VITE_API_URL;
+        const response = await axios.patch(`${apiUrl}/race`, {currWpm, currAccuracy, chars}, {withCredentials: true});
 
         if (response.data.error) {
           console.log(response.data.error);

@@ -64,5 +64,6 @@
   #loader-container {
     display: grid;
     place-items: center;
+    margin-top: 10rem;
   }
   
