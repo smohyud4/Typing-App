@@ -22,7 +22,7 @@ const db = new pg.Client({
     password: process.env.PG_PASSWORD,
     port: process.env.PG_PORT
 });
-db.connect();
+//db.connect();
 
 
 app.use(cors({
