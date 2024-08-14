@@ -11,16 +11,16 @@ import { initializeCharQuery, updateQueries } from "./queries.js";
 
 env.config();
 const app = express();
-const port = 5000;
-const saltRounds = 10;
-const SECRET_KEY = "Trweashedeeze123**";
+const port = process.env.PORT || 5000;
+const saltRounds = process.env.SALT_ROUNDS;
+const SECRET_KEY = process.env.SECRET_KEY;
 
 const db = new pg.Client({
-    user: "postgres",
-    host: "localhost",
-    database: "Typing",
-    password: "baraka46",
-    port: 5432,
+    user: process.env.PG_USER,
+    host:  process.env.PG_HOST,
+    database: process.env.PG_DATABASE,
+    password: process.env.PG_PASSWORD,
+    port: process.env.PG_PORT
 });
 db.connect();
 
@@ -43,6 +43,10 @@ function verifyUser(req, res, next) {
         next();
     });
 }
+
+app.get("/", (req, res) => {
+    res.send("Hello Typers!");
+});
 
 app.get("/authorize", verifyUser, async (req, res) => {
     res.json({user: req.user});
@@ -68,7 +72,6 @@ app.get("/account", verifyUser, async (req, res) => {
     try {
         const result = await db.query("SELECT * FROM users WHERE username = $1", [user]);
         const data = result.rows[0];
-        console.log(data);
 
         const accuracies = await db.query("SELECT character, total_typed, total_correct FROM character_stats WHERE user_name = $1", [user]);
         
@@ -91,9 +94,10 @@ app.get("/account", verifyUser, async (req, res) => {
 
 app.get("/random-text", async (req, res) => {
    
+    const limit = Math.random() < 0.6 ? 2 : 3;
     const options = {
         method: 'GET',
-        url: 'https://api.api-ninjas.com/v1/facts',
+        url: 'https://api.api-ninjas.com/v1/facts?limit=' + limit,
         headers: {
             'X-Api-Key': process.env.API_KEY
         }
@@ -101,7 +105,7 @@ app.get("/random-text", async (req, res) => {
 
     try {
         const response = await axios.request(options);
-        res.json({text: response.data[0].fact});
+        res.json({text: response.data});
     } 
     catch (error) {
         console.error(error);
