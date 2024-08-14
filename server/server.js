@@ -27,7 +27,7 @@ const pool = new pg.Pool({
 });
 
 app.use(cors({
-    origin: "https://key-type-delta.vercel.app/",
+    origin: "https://key-type-delta.vercel.app",
     methods: ["GET", "POST", "PATCH"],
     credentials: true
 }));
